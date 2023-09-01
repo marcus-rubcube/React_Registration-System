@@ -3,7 +3,13 @@ Electronic product registration system. Registration and listing of customers, s
 
 ## Available Scripts
 
-In the project directory, you can run:
+In the project directory:
+
+To install the depences:
+
+### `npm install`
+
+After that you can run: 
 
 ### `npm start`
 
