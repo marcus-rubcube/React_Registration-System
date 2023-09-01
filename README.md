@@ -1,11 +1,11 @@
 # React_Registration-System
-Electronic product registration system. Registration and listing of customers, suppliers, products, categories, sales and purchases.
+Electronic product registration system. Registration and listing of customers, suppliers, products, categories, sales and purchases. Project developed with react and typescript.
 
 ## Available Scripts
 
 In the project directory:
 
-To install the depences:
+To install the dependencies:
 
 ### `npm install`
 

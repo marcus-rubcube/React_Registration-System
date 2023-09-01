@@ -1,12 +1,12 @@
 import React from "react";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import { RegisterClientScreen } from "./screens/register-client-screen";
-import { RegisterCategoriesScreen } from "./screens/register-categories-screen";
-import { translateMenu } from "./components/menu/translations/ptBr";
-import { RegisterProviderScreen } from "./screens/register-provider-screen";
-import { RegisterProductsScreen } from "./screens/register-products-screen";
-import { RegisterSaleScreen } from "./screens/register-sale-screen";
-import { RegisterPurchaseScreen } from "./screens/register-purchase-screen";
+import { RegisterClientScreen } from "./screens/register-client/register-client-screen";
+import { RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
+import { translateMenu } from "./common/components/menu/translations/ptBr";
+import { RegisterProviderScreen } from "./screens/register-provider/register-provider-screen";
+import { RegisterProductsScreen } from "./screens/register-products/register-products-screen";
+import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen";
+import { RegisterPurchaseScreen } from "./screens/register-purchase/register-purchase-screen";
 
 function App() {
   const router = createBrowserRouter([
@@ -28,16 +28,16 @@ function App() {
     },
     {
       path: translateMenu.routes.products,
-      element: <RegisterProductsScreen/>,
+      element: <RegisterProductsScreen />,
     },
     {
       path: translateMenu.routes.sale,
-      element: <RegisterSaleScreen/>
+      element: <RegisterSaleScreen />,
     },
     {
       path: translateMenu.routes.purchase,
-      element: <RegisterPurchaseScreen/>
-    }
+      element: <RegisterPurchaseScreen />,
+    },
   ]);
 
   return (

@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
-import { Page } from "../components/page/page";
-import { RegisterClientForm } from "./forms/register-client-form";
-import { ClientsTable } from "./tables/clients-table";
+import { Page } from "../../common/components/page/page";
+import { RegisterClientForm } from "../components/forms/register-client-form";
+import { ClientsTable } from "../components/tables/clients-table";
 
 export const RegisterClientScreen = (): ReactElement => {
   const [showForm, setShowForm] = useState(false);

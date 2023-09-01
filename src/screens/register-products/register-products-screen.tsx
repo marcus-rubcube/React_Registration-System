@@ -1,7 +1,7 @@
 import { ReactElement, useState } from "react";
-import { Page } from "../components/page/page";
-import { RegisterProductForm } from "./forms/register-products-form";
-import { ProductsTable } from "./tables/pruducts-table";
+import { Page } from "../../common/components/page/page";
+import { RegisterProductForm } from "../components/forms/register-products-form";
+import { ProductsTable } from "../components/tables/pruducts-table";
 
 export const RegisterProductsScreen = (): ReactElement => {
   const [showForm, setShowForm] = useState(false);
