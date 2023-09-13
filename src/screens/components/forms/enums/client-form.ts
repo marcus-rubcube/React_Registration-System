@@ -5,5 +5,6 @@ export enum ClientFormEnum {
   zipCode = "zipCode",
   number = "number",
   address = "address",
-  city = "city"
+  city = "city",
+  uf = "uf",
 }

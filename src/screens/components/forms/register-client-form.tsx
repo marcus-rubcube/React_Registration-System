@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import {
   Container,
   Form,
@@ -14,6 +14,32 @@ import { ClientFormEnum } from "./enums/client-form";
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
 }
+
+interface Client {
+  document: string;
+  name: string;
+  neighborhood: string;
+  address: string;
+  city: string;
+  uf: string;
+  number: string;
+  zipCode: string;
+}
+
+interface FormControlElement {
+  value: string;
+}
+
+const INITIAL_CLIENT_STATE = {
+  document: "",
+  name: "",
+  neighborhood: "",
+  address: "",
+  city: "",
+  uf: "",
+  number: "",
+  zipCode: "",
+};
 
 const translate = formsTranslates.clientForms;
 
@@ -51,9 +77,40 @@ export const RegisterClientForm = ({
     { value: "EX", label: translate.federalUnits.EX },
   ];
 
+  const [client, setClient] = useState<Client>(INITIAL_CLIENT_STATE);
+  const [validated, setValidated] = useState(false);
+
+  function onChange(
+    event: React.ChangeEvent<FormControlElement>,
+    field: ClientFormEnum
+  ) {
+    setClient({
+      ...client,
+      [field]: event.currentTarget.value,
+    });
+  }
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    if (form.checkValidity()) {
+      // backend
+      setClient(INITIAL_CLIENT_STATE);
+      setValidated(false);
+    } else {
+      setValidated(true);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
   return (
     <Container className="mt-5">
-      <Form>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={(event) => onSubmit(event)}
+      >
         <Row>
           <Col>
             <Form.Group>
@@ -66,6 +123,8 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formPlaceholder.document}
                   id={ClientFormEnum.document}
+                  onChange={(event) => onChange(event, ClientFormEnum.document)}
+                  value={client.document}
                   required
                 />
               </FloatingLabel>
@@ -88,6 +147,8 @@ export const RegisterClientForm = ({
                   placeholder={translate.formPlaceholder.name}
                   id={ClientFormEnum.name}
                   required
+                  onChange={(event) => onChange(event, ClientFormEnum.name)}
+                  value={client.name}
                 />
               </FloatingLabel>
               <Form.Control.Feedback type="invalid">
@@ -108,6 +169,8 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formPlaceholder.address}
                   id={ClientFormEnum.address}
+                  onChange={(event) => onChange(event, ClientFormEnum.address)}
+                  value={client.address}
                   required
                 />
               </FloatingLabel>
@@ -127,6 +190,8 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formPlaceholder.number}
                   id={ClientFormEnum.number}
+                  onChange={(event) => onChange(event, ClientFormEnum.number)}
+                  value={client.number}
                   required
                 />
               </FloatingLabel>
@@ -148,6 +213,10 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formPlaceholder.neighborhood}
                   id={ClientFormEnum.neighborhood}
+                  onChange={(event) =>
+                    onChange(event, ClientFormEnum.neighborhood)
+                  }
+                  value={client.neighborhood}
                   required
                 />
               </FloatingLabel>
@@ -167,6 +236,8 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formPlaceholder.city}
                   id={ClientFormEnum.city}
+                  onChange={(event) => onChange(event, ClientFormEnum.city)}
+                  value={client.city}
                   required
                 />
               </FloatingLabel>
@@ -181,7 +252,12 @@ export const RegisterClientForm = ({
               label={translate.formLabels.uf}
               className="mb-3"
             >
-              <Form.Select aria-label={translate.formLabels.ufAriaLabel}>
+              <Form.Select
+                aria-label={translate.formLabels.ufAriaLabel}
+                id={ClientFormEnum.uf}
+                onChange={(event) => onChange(event, ClientFormEnum.uf)}
+                value={client.uf}
+              >
                 {federalUnits.map((uf) => (
                   <option key={uf.value} value={uf.value}>
                     {uf.label}
@@ -203,6 +279,8 @@ export const RegisterClientForm = ({
                   type="text"
                   placeholder={translate.formLabels.zipCode}
                   id={ClientFormEnum.zipCode}
+                  onChange={(event) => onChange(event, ClientFormEnum.zipCode)}
+                  value={client.zipCode}
                   required
                 />
               </FloatingLabel>
