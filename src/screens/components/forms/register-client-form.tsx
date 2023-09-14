@@ -1,5 +1,6 @@
 import { ReactElement, useState } from "react";
 import {
+  Alert,
   Button,
   Col,
   Container,
@@ -89,6 +90,7 @@ export const RegisterClientForm = ({
 
   const [client, setClient] = useState<Client>(INITIAL_CLIENT_STATE);
   const [validated, setValidated] = useState(false);
+  const [showSuccessRegister, setShowSuccessRegister] = useState(false);
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -109,6 +111,10 @@ export const RegisterClientForm = ({
     const form = event.currentTarget;
     if (form.checkValidity()) {
       setClients([...clients, client]);
+      setShowSuccessRegister(true);
+      setTimeout(() => {
+        setShowSuccessRegister(false);
+      }, 2000);
       setClient(INITIAL_CLIENT_STATE);
       setValidated(false);
     } else {
@@ -303,6 +309,11 @@ export const RegisterClientForm = ({
             </FloatingLabel>
           </Col>
         </Row>
+        {showSuccessRegister && (
+          <Row>
+            <Alert variant="success">{translate.successOnRegister}</Alert>
+          </Row>
+        )}
         <Row>
           <Col md={6} className="d-flex justify-content-end">
             <Button type="submit" variant={"primary"}>

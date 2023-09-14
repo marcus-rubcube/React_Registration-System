@@ -64,6 +64,7 @@ export const formsTranslates = {
       register: "Cadastrar",
       goBack: "Voltar",
     },
+    successOnRegister: "Cliente cadastrado com sucesso!",
   },
   categoriesForm: {
     labels: {
@@ -115,7 +116,7 @@ export const formsTranslates = {
       model: "Modelo",
       manufacturingDate: "Data de fabricação",
       category: "Categoria do Produto",
-      provider: "Fornecedor"
+      provider: "Fornecedor",
     },
     placeholders: {
       name: "Digite o nome do produto",
@@ -126,7 +127,7 @@ export const formsTranslates = {
       model: "Digite o modelo do produto",
       manufacturingDate: "Escolha a data de fabricação",
       category: "Selecione uma categoria",
-      provider: "Selecione um fornecedor"
+      provider: "Selecione um fornecedor",
     },
     buttons: {
       register: "Cadastrar Produto",
@@ -134,40 +135,40 @@ export const formsTranslates = {
     },
   },
   saleForm: {
-    labels:{
+    labels: {
       client: "Cliente",
       quantity: "Quantidade de Produtos",
       value: "Valor",
-      paymentMethod: "Forma de Pagamento"
+      paymentMethod: "Forma de Pagamento",
     },
-    placeholders:{
+    placeholders: {
       client: "Digite o nome do cliente",
       quantity: "Digite a quantidade de produtos",
       value: "Digite o valor total da venda",
       paymentMethod: "Informe a forma de pagamento",
-      seller: "Digite o nome do vendedor"
+      seller: "Digite o nome do vendedor",
     },
     buttons: {
       register: "Cadastrar venda",
-      goBack: "Voltar"
-    }
+      goBack: "Voltar",
+    },
   },
   purchaseForm: {
-    labels:{
+    labels: {
       provider: "Fornecedor",
       quantity: "Quantidade de Produtos",
       value: "Valor",
-      paymentMethod: "Forma de Pagamento"
+      paymentMethod: "Forma de Pagamento",
     },
-    placeholders:{
+    placeholders: {
       provider: "Digite o nome do fornecedor",
       quantity: "Digite a quantidade de produtos",
       value: "Digite o valor total da venda",
-      paymentMethod: "Informe a forma de pagamento"
+      paymentMethod: "Informe a forma de pagamento",
     },
     buttons: {
       register: "Cadastrar venda",
-      goBack: "Voltar"
-    }
-  }
+      goBack: "Voltar",
+    },
+  },
 };
