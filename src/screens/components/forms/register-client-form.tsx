@@ -1,15 +1,21 @@
 import { ReactElement, useState } from "react";
 import {
-  Container,
-  Form,
-  Row,
-  Col,
-  FloatingLabel,
-  FormControl,
   Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  FormControl,
+  Row,
 } from "react-bootstrap";
-import { formsTranslates } from "./translations/ptBr";
+import {
+  ViaCepResponse,
+  fetchAddressByZipCode,
+} from "../../../api/via-cep/via-cep-service";
+import { documentFormatter } from "../../../utils/document-formatter";
+import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ClientFormEnum } from "./enums/client-form";
+import { formsTranslates } from "./translations/ptBr";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
@@ -88,16 +94,21 @@ export const RegisterClientForm = ({
     event: React.ChangeEvent<FormControlElement>,
     field: ClientFormEnum
   ) {
-    setClient({
-      ...client,
-      [field]: event.currentTarget.value,
-    });
+    if (field === ClientFormEnum.document) {
+      const formattedDocument = documentFormatter(event.currentTarget.value);
+      setClient({ ...client, [field]: formattedDocument });
+    } else if (field === ClientFormEnum.zipCode) {
+      const formattedZipCode = zipCodeFormatter(event.currentTarget.value);
+      setClient({ ...client, [field]: formattedZipCode });
+    } else {
+      setClient({ ...client, [field]: event.currentTarget.value });
+    }
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
     if (form.checkValidity()) {
-      setClients([...clients, client])
+      setClients([...clients, client]);
       setClient(INITIAL_CLIENT_STATE);
       setValidated(false);
     } else {
@@ -106,6 +117,22 @@ export const RegisterClientForm = ({
 
     event.preventDefault();
     event.stopPropagation();
+  }
+
+  async function getAddressInfos() {
+    if (client.zipCode) {
+      await fetchAddressByZipCode(client.zipCode)
+        .then((res: ViaCepResponse) => {
+          setClient({
+            ...client,
+            address: res.logradouro,
+            city: res.localidade,
+            neighborhood: res.bairro,
+            uf: res.uf,
+          });
+        })
+        .catch((err) => console.log(err));
+    }
   }
 
   return (
@@ -119,7 +146,6 @@ export const RegisterClientForm = ({
           <Col>
             <Form.Group>
               <FloatingLabel
-                controlId="floatingInput"
                 label={translate.formLabels.document}
                 className="mb-3"
               >
@@ -141,11 +167,7 @@ export const RegisterClientForm = ({
         <Row>
           <Col>
             <Form.Group>
-              <FloatingLabel
-                controlId="floatingInput"
-                label={translate.formLabels.name}
-                className="mb-3"
-              >
+              <FloatingLabel label={translate.formLabels.name} className="mb-3">
                 <FormControl
                   type="text"
                   placeholder={translate.formPlaceholder.name}
@@ -160,12 +182,32 @@ export const RegisterClientForm = ({
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
+          <Col md={4}>
+            <Form.Group>
+              <FloatingLabel
+                label={translate.formLabels.zipCode}
+                className="mb-3"
+              >
+                <FormControl
+                  type="text"
+                  placeholder={translate.formLabels.zipCode}
+                  id={ClientFormEnum.zipCode}
+                  onChange={(event) => onChange(event, ClientFormEnum.zipCode)}
+                  value={client.zipCode}
+                  required
+                  onBlur={getAddressInfos}
+                />
+              </FloatingLabel>
+              <Form.Control.Feedback type="invalid">
+                {translate.feedbackMessage.zipCode}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
         </Row>
         <Row>
           <Col md={10}>
             <Form.Group>
               <FloatingLabel
-                controlId="floatingInput"
                 label={translate.formLabels.address}
                 className="mb-3"
               >
@@ -186,7 +228,6 @@ export const RegisterClientForm = ({
           <Col md={2}>
             <Form.Group>
               <FloatingLabel
-                controlId="floatingInput"
                 label={translate.formLabels.number}
                 className="mb-3"
               >
@@ -209,7 +250,6 @@ export const RegisterClientForm = ({
           <Col md={4}>
             <Form.Group>
               <FloatingLabel
-                controlId="floatingInput"
                 label={translate.formLabels.neighborhood}
                 className="mb-3"
               >
@@ -231,11 +271,7 @@ export const RegisterClientForm = ({
           </Col>
           <Col md={5}>
             <Form.Group>
-              <FloatingLabel
-                controlId="floatingInput"
-                label={translate.formLabels.city}
-                className="mb-3"
-              >
+              <FloatingLabel label={translate.formLabels.city} className="mb-3">
                 <FormControl
                   type="text"
                   placeholder={translate.formPlaceholder.city}
@@ -251,11 +287,7 @@ export const RegisterClientForm = ({
             </Form.Group>
           </Col>
           <Col md={3}>
-            <FloatingLabel
-              controlId="floatingInput"
-              label={translate.formLabels.uf}
-              className="mb-3"
-            >
+            <FloatingLabel label={translate.formLabels.uf} className="mb-3">
               <Form.Select
                 aria-label={translate.formLabels.ufAriaLabel}
                 id={ClientFormEnum.uf}
@@ -269,29 +301,6 @@ export const RegisterClientForm = ({
                 ))}
               </Form.Select>
             </FloatingLabel>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={4}>
-            <Form.Group>
-              <FloatingLabel
-                controlId="floatingInput"
-                label={translate.formLabels.zipCode}
-                className="mb-3"
-              >
-                <FormControl
-                  type="text"
-                  placeholder={translate.formLabels.zipCode}
-                  id={ClientFormEnum.zipCode}
-                  onChange={(event) => onChange(event, ClientFormEnum.zipCode)}
-                  value={client.zipCode}
-                  required
-                />
-              </FloatingLabel>
-              <Form.Control.Feedback type="invalid">
-                {translate.feedbackMessage.zipCode}
-              </Form.Control.Feedback>
-            </Form.Group>
           </Col>
         </Row>
         <Row>

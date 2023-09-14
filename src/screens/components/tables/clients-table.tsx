@@ -1,6 +1,8 @@
 import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Client } from "../forms/register-client-form";
+import { documentFormatter } from "../../../utils/document-formatter";
+import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
@@ -12,11 +14,11 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
     return (
       <>
         <tr>
-          <td>{client.document}</td>
+          <td>{documentFormatter(client.document)}</td>
           <td>{client.name}</td>
-          <td>{`${client.address},nº ${client.number}`}</td>
+          <td>{`${client.address}, nº ${client.number}`}</td>
           <td>{`${client.city} - ${client.uf}`}</td>
-          <td>{client.zipCode}</td>
+          <td>{zipCodeFormatter(client.zipCode)}</td>
         </tr>
       </>
     );
@@ -31,9 +33,9 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
       <Table striped bordered hover>
         <thead>
           <tr>
-            <th>{tableTranslates.clients.tableHead.address}</th>
-            <th>{tableTranslates.clients.tableHead.name}</th>
             <th>{tableTranslates.clients.tableHead.document}</th>
+            <th>{tableTranslates.clients.tableHead.name}</th>
+            <th>{tableTranslates.clients.tableHead.address}</th>
             <th>{tableTranslates.clients.tableHead.cityAndUF}</th>
             <th>{tableTranslates.clients.tableHead.zipCode}</th>
           </tr>
