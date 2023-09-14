@@ -1,4 +1,4 @@
-import { Button, Container, Table } from "react-bootstrap";
+import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Client } from "../forms/register-client-form";
 
@@ -22,11 +22,12 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
     );
   };
 
-  return (
-    <Container className="mt-4">
-      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
-        {tableTranslates.clients.goBackButtonLabel}
-      </Button>
+  function renderContent() {
+    if (clients.length === 0) {
+      return <Alert className="mt-3">{tableTranslates.clients.noContent}</Alert>
+    }
+
+    return (
       <Table striped bordered hover>
         <thead>
           <tr>
@@ -39,6 +40,15 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
         </thead>
         <tbody>{clients.map((client: Client) => renderTableRow(client))}</tbody>
       </Table>
+    );
+  }
+
+  return (
+    <Container className="mt-4">
+      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
+        {tableTranslates.clients.goBackButtonLabel}
+      </Button>
+      {renderContent()}
     </Container>
   );
 };

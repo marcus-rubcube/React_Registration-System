@@ -8,6 +8,7 @@ export const tableTranslates = {
       zipCode: "CEP",
     },
     goBackButtonLabel: "Novo Cliente",
+    noContent: "Ainda não há clientes cadastrados",
   },
   categories: {
     tableHead: {
