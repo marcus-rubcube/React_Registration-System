@@ -1,11 +1,27 @@
 import { Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
+import { Client } from "../forms/register-client-form";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
+  clients: Client[];
 }
 
-export const ClientsTable = ({ setShowForm }: ClientsProps) => {
+export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
+  const renderTableRow = (client: Client) => {
+    return (
+      <>
+        <tr>
+          <td>{client.document}</td>
+          <td>{client.name}</td>
+          <td>{`${client.address},nº ${client.number}`}</td>
+          <td>{`${client.city} - ${client.uf}`}</td>
+          <td>{client.zipCode}</td>
+        </tr>
+      </>
+    );
+  };
+
   return (
     <Container className="mt-4">
       <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
@@ -21,15 +37,7 @@ export const ClientsTable = ({ setShowForm }: ClientsProps) => {
             <th>{tableTranslates.clients.tableHead.zipCode}</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td>000.000.000-00</td>
-            <td>Maria Aparecida Fake</td>
-            <td>Rua das Flores, nº 2569</td>
-            <td>Presidente Prudente/SP</td>
-            <td>19023-290</td>
-          </tr>
-        </tbody>
+        <tbody>{clients.map((client: Client) => renderTableRow(client))}</tbody>
       </Table>
     </Container>
   );

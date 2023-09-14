@@ -13,9 +13,11 @@ import { ClientFormEnum } from "./enums/client-form";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
+  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
+  clients: Client[];
 }
 
-interface Client {
+export interface Client {
   document: string;
   name: string;
   neighborhood: string;
@@ -36,7 +38,7 @@ const INITIAL_CLIENT_STATE = {
   neighborhood: "",
   address: "",
   city: "",
-  uf: "",
+  uf: "SP",
   number: "",
   zipCode: "",
 };
@@ -45,6 +47,8 @@ const translate = formsTranslates.clientForms;
 
 export const RegisterClientForm = ({
   setShowForm,
+  clients,
+  setClients,
 }: ClientsProps): ReactElement => {
   const federalUnits = [
     { value: "SP", label: translate.federalUnits.SP },
@@ -93,7 +97,7 @@ export const RegisterClientForm = ({
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
     if (form.checkValidity()) {
-      // backend
+      setClients([...clients, client])
       setClient(INITIAL_CLIENT_STATE);
       setValidated(false);
     } else {
