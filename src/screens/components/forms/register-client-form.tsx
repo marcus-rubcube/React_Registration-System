@@ -17,11 +17,16 @@ import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ClientFormEnum } from "./enums/client-form";
 import { formsTranslates } from "./translations/ptBr";
+import { INITIAL_CLIENT_STATE } from "../../register-client/register-client-screen";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
   setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   clients: Client[];
+  selectedClient: Client;
+  editMode: boolean;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedClient: React.Dispatch<React.SetStateAction<Client>>;
 }
 
 export interface Client {
@@ -39,23 +44,16 @@ interface FormControlElement {
   value: string;
 }
 
-const INITIAL_CLIENT_STATE = {
-  document: "",
-  name: "",
-  neighborhood: "",
-  address: "",
-  city: "",
-  uf: "SP",
-  number: "",
-  zipCode: "",
-};
-
 const translate = formsTranslates.clientForms;
 
 export const RegisterClientForm = ({
   setShowForm,
   clients,
   setClients,
+  editMode,
+  selectedClient,
+  setSelectedClient,
+  setEditMode,
 }: ClientsProps): ReactElement => {
   const federalUnits = [
     { value: "SP", label: translate.federalUnits.SP },
@@ -88,7 +86,7 @@ export const RegisterClientForm = ({
     { value: "EX", label: translate.federalUnits.EX },
   ];
 
-  const [client, setClient] = useState<Client>(INITIAL_CLIENT_STATE);
+  const [client, setClient] = useState<Client>(selectedClient);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
 
@@ -107,16 +105,41 @@ export const RegisterClientForm = ({
     }
   }
 
+  function addClient() {
+    setClients([...clients, client]);
+  }
+
+  function editClient() {
+    setClients([
+      ...clients.filter(
+        (clientItem) => clientItem.document !== client.document
+      ),
+      client,
+    ]);
+    setSelectedClient(INITIAL_CLIENT_STATE);
+  }
+
+  function onSuccessAction() {
+    setShowSuccessRegister(true);
+    setTimeout(() => {
+      setShowSuccessRegister(false);
+      if (editMode) {
+        setShowForm(false);
+      }
+      setEditMode(false);
+    }, 2000);
+    setValidated(false);
+  }
+
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
     if (form.checkValidity()) {
-      setClients([...clients, client]);
-      setShowSuccessRegister(true);
-      setTimeout(() => {
-        setShowSuccessRegister(false);
-      }, 2000);
-      setClient(INITIAL_CLIENT_STATE);
-      setValidated(false);
+      if (!editMode) {
+        addClient();
+      } else {
+        editClient();
+      }
+      onSuccessAction();
     } else {
       setValidated(true);
     }
@@ -311,13 +334,17 @@ export const RegisterClientForm = ({
         </Row>
         {showSuccessRegister && (
           <Row>
-            <Alert variant="success">{translate.successOnRegister}</Alert>
+            <Alert variant={editMode ? "info" : "success"}>
+              {editMode
+                ? translate.successOnUpdate
+                : translate.successOnRegister}
+            </Alert>
           </Row>
         )}
         <Row>
           <Col md={6} className="d-flex justify-content-end">
             <Button type="submit" variant={"primary"}>
-              {translate.buttons.register}
+              {editMode ? translate.buttons.update : translate.buttons.register}
             </Button>
           </Col>
           <Col md={6}>

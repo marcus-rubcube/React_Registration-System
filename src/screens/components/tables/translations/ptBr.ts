@@ -5,10 +5,12 @@ export const tableTranslates = {
       name: "Nome",
       address: "Endereço",
       cityAndUF: "Cidade/UF",
+      neighborhood: "Bairro",
       zipCode: "CEP",
     },
     goBackButtonLabel: "Novo Cliente",
     noContent: "Ainda não há clientes cadastrados",
+    wantToDelete: "Deseja realmente excluir esse cliente",
   },
   categories: {
     tableHead: {

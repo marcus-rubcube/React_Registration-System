@@ -62,9 +62,11 @@ export const formsTranslates = {
     },
     buttons: {
       register: "Cadastrar",
+      update: "Atualizar",
       goBack: "Voltar",
     },
     successOnRegister: "Cliente cadastrado com sucesso!",
+    successOnUpdate: "Cliente atualizado com sucesso!",
   },
   categoriesForm: {
     labels: {

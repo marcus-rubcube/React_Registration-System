@@ -3,14 +3,36 @@ import { tableTranslates } from "./translations/ptBr";
 import { Client } from "../forms/register-client-form";
 import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
+import { ActionsButton } from "./components/actions-buttons/actions-button";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
   clients: Client[];
+  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedClient: React.Dispatch<React.SetStateAction<Client>>;
 }
 
-export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
+export const ClientsTable = ({
+  setShowForm,
+  clients,
+  setClients,
+  setEditMode,
+  setSelectedClient,
+}: ClientsProps) => {
   const renderTableRow = (client: Client) => {
+    function deleteClient(document: string) {
+      if (window.confirm(`${tableTranslates.clients.wantToDelete}`)) {
+        setClients(clients.filter((client) => client.document !== document));
+      }
+    }
+
+    function updateClient(client: Client) {
+      setSelectedClient(client);
+      setEditMode(true);
+      setShowForm(true);
+    }
+
     return (
       <>
         <tr>
@@ -18,7 +40,14 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
           <td>{client.name}</td>
           <td>{`${client.address}, nº ${client.number}`}</td>
           <td>{`${client.city} - ${client.uf}`}</td>
+          <td>{client.neighborhood}</td>
           <td>{zipCodeFormatter(client.zipCode)}</td>
+          <td>
+            <ActionsButton
+              deleteClient={() => deleteClient(client.document)}
+              updateClient={() => updateClient(client)}
+            />
+          </td>
         </tr>
       </>
     );
@@ -26,7 +55,9 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
 
   function renderContent() {
     if (clients.length === 0) {
-      return <Alert className="mt-3">{tableTranslates.clients.noContent}</Alert>
+      return (
+        <Alert className="mt-3">{tableTranslates.clients.noContent}</Alert>
+      );
     }
 
     return (
@@ -37,6 +68,7 @@ export const ClientsTable = ({ setShowForm, clients }: ClientsProps) => {
             <th>{tableTranslates.clients.tableHead.name}</th>
             <th>{tableTranslates.clients.tableHead.address}</th>
             <th>{tableTranslates.clients.tableHead.cityAndUF}</th>
+            <th>{tableTranslates.clients.tableHead.neighborhood}</th>
             <th>{tableTranslates.clients.tableHead.zipCode}</th>
           </tr>
         </thead>
