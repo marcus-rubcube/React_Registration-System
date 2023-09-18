@@ -119,6 +119,10 @@ export const RegisterClientForm = ({
     setSelectedClient(INITIAL_CLIENT_STATE);
   }
 
+  function resetForm(){
+    setClient(INITIAL_CLIENT_STATE);
+  }
+
   function onSuccessAction() {
     setShowSuccessRegister(true);
     setTimeout(() => {
@@ -129,6 +133,7 @@ export const RegisterClientForm = ({
       setEditMode(false);
     }, 2000);
     setValidated(false);
+    resetForm();
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -351,7 +356,11 @@ export const RegisterClientForm = ({
             <Button
               type="button"
               variant={"secondary"}
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedClient(INITIAL_CLIENT_STATE);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>
