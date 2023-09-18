@@ -359,6 +359,7 @@ export const RegisterClientForm = ({
               onClick={() => {
                 resetForm();
                 setSelectedClient(INITIAL_CLIENT_STATE);
+                setEditMode(false);
                 setShowForm(false);
               }}
             >
