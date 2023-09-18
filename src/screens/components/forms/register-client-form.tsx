@@ -44,6 +44,8 @@ interface FormControlElement {
   value: string;
 }
 
+const TIMEOUT = 2000;
+
 const translate = formsTranslates.clientForms;
 
 export const RegisterClientForm = ({
@@ -119,6 +121,10 @@ export const RegisterClientForm = ({
     setSelectedClient(INITIAL_CLIENT_STATE);
   }
 
+  function resetForm(){
+    setClient(INITIAL_CLIENT_STATE);
+  }
+
   function onSuccessAction() {
     setShowSuccessRegister(true);
     setTimeout(() => {
@@ -127,8 +133,9 @@ export const RegisterClientForm = ({
         setShowForm(false);
       }
       setEditMode(false);
-    }, 2000);
+    }, TIMEOUT);
     setValidated(false);
+    resetForm();
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -351,7 +358,12 @@ export const RegisterClientForm = ({
             <Button
               type="button"
               variant={"secondary"}
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedClient(INITIAL_CLIENT_STATE);
+                setEditMode(false);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>
