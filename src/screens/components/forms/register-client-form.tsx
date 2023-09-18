@@ -44,6 +44,8 @@ interface FormControlElement {
   value: string;
 }
 
+const TIMEOUT = 2000;
+
 const translate = formsTranslates.clientForms;
 
 export const RegisterClientForm = ({
@@ -131,7 +133,7 @@ export const RegisterClientForm = ({
         setShowForm(false);
       }
       setEditMode(false);
-    }, 2000);
+    }, TIMEOUT);
     setValidated(false);
     resetForm();
   }
