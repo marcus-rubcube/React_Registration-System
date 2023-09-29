@@ -10,7 +10,7 @@ export const tableTranslates = {
     },
     goBackButtonLabel: "Novo Cliente",
     noContent: "Ainda não há clientes cadastrados",
-    wantToDelete: "Deseja realmente excluir esse cliente",
+    wantToDelete: "Deseja realmente excluir esse cliente?",
   },
   categories: {
     tableHead: {
@@ -21,6 +21,7 @@ export const tableTranslates = {
   },
   providers: {
     tableHead: {
+      document: "CNPJ",
       name: "Nome",
       address: "Endereço",
       phoneNumber: "Nº telefone",
@@ -29,6 +30,8 @@ export const tableTranslates = {
       companyDescription: "Descrição",
     },
     goBackButtonLabel: "Novo Fornecedor",
+    noContent: "Ainda não há fornecedores cadastrados",
+    wantToDelete: "Deseja realmente excluir esse fornecedor?",
   },
   products: {
     tableHead: {

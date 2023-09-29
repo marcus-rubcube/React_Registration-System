@@ -94,19 +94,22 @@ export const formsTranslates = {
       email: "Endereço de Email",
       website: "Site",
       description: "Descrição da Empresa",
+      document: "CNPJ",
     },
     placeholders: {
       name: "Digite o nome da empresa/fornecedor",
-      address: "Digite o endereço",
       phoneNumber: "Digite o número de telefone",
       email: "Digite o endereço de email",
       website: "Digite o site (opcional)",
       description: "Digite a descrição da empresa",
+      document: "Degite o CNPJ da empresa",
     },
     buttons: {
       register: "Cadastrar Fornecedor",
       goBack: "Voltar",
     },
+    successOnRegister: "Fornecedor cadastrado com sucesso!",
+    successOnUpdate: "Fornecedor atualizado com sucesso!",
   },
   productsForm: {
     labels: {

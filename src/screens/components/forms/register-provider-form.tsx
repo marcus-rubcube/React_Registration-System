@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import {
   Container,
   Form,
@@ -10,19 +10,152 @@ import {
 } from "react-bootstrap";
 import { ProviderFormEnum } from "./enums/provider-form";
 import { formsTranslates } from "./translations/ptBr";
-
+import { INITIAL_PROVIDER_STATE } from "../../register-provider/register-provider-screen";
+import Message from "../message/message";
 interface ProvidersProps {
   setShowForm: (value: boolean) => void;
+  setProviders: React.Dispatch<React.SetStateAction<Provider[]>>;
+  providers: Provider[];
+  selectedProvider: Provider;
+  editMode: boolean;
+  setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectedProvider: React.Dispatch<React.SetStateAction<Provider>>;
+}
+export interface Provider {
+  name: string;
+  phoneNumber: string;
+  email: string;
+  website: string;
+  description: string;
+  document: string;
+}
+
+interface FormControlElement {
+  value: string;
 }
 
 const translate = formsTranslates.providersForm;
 
+export const TIMEOUT = 2000;
+
 export const RegisterProviderForm = ({
   setShowForm,
+  editMode,
+  providers,
+  selectedProvider,
+  setEditMode,
+  setProviders,
+  setSelectedProvider,
 }: ProvidersProps): ReactElement => {
+  const [provider, setProvider] = useState<Provider>(selectedProvider);
+  const [validated, setValidated] = useState(false);
+  const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+
+  function onChange(
+    event: React.ChangeEvent<FormControlElement>,
+    field: ProviderFormEnum
+  ) {
+    setProvider({ ...provider, [field]: event.currentTarget.value });
+  }
+
+  function addProviders() {
+    setProviders([...providers, provider]);
+  }
+
+  function resetForm() {
+    setProvider(INITIAL_PROVIDER_STATE);
+  }
+
+  function editProvider() {
+    setProviders([
+      ...providers.filter(
+        (providerItem) => providerItem.document !== provider.document
+      ),
+      provider,
+    ]);
+    setSelectedProvider(INITIAL_PROVIDER_STATE);
+  }
+
+  function onSuccessAction() {
+    setShowSuccessRegister(true);
+    setTimeout(() => {
+      setShowSuccessRegister(false);
+      if (editMode) {
+        setShowForm(false);
+      }
+      setEditMode(false);
+    }, TIMEOUT);
+    setValidated(false);
+    resetForm();
+  }
+
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    const form = event.currentTarget;
+    if (form.checkValidity()) {
+      if (!editMode) {
+        addProviders();
+      } else {
+        editProvider();
+      }
+      onSuccessAction();
+    } else {
+      setValidated(true);
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  function renderSuccessMessage() {
+    if (showSuccessRegister) {
+      if (editMode) {
+        return (
+          <Message
+            message={translate.successOnUpdate}
+            type="info"
+            setShowMessage={setShowSuccessRegister}
+          />
+        );
+      }
+
+      return (
+        <Message
+          message={translate.successOnRegister}
+          type="success"
+          setShowMessage={setShowSuccessRegister}
+        />
+      );
+    }
+    return <></>;
+  }
+
   return (
     <Container className="mt-5">
-      <Form>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={(event) => onSubmit(event)}
+      >
+        <Row>
+          <Col>
+            <Form.Group>
+              <FloatingLabel
+                label={translate.labels.document}
+                className="mb-3"
+              >
+                <FormControl
+                  type="text"
+                  placeholder={translate.placeholders.document}
+                  id={ProviderFormEnum.document}
+                  onChange={(event) => onChange(event, ProviderFormEnum.document)}
+                  value={provider.document}
+                  disabled={editMode}
+                  required
+                />
+              </FloatingLabel>
+            </Form.Group>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Form.Group>
@@ -36,24 +169,8 @@ export const RegisterProviderForm = ({
                   placeholder={translate.placeholders.name}
                   required
                   id={ProviderFormEnum.name}
-                />
-              </FloatingLabel>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Form.Group>
-              <FloatingLabel
-                controlId="floatingInput"
-                label={translate.labels.address}
-                className="mb-3"
-              >
-                <FormControl
-                  type="text"
-                  placeholder={translate.placeholders.address}
-                  required
-                  id={ProviderFormEnum.address}
+                  value={provider.name}
+                  onChange={(event) => onChange(event, ProviderFormEnum.name)}
                 />
               </FloatingLabel>
             </Form.Group>
@@ -72,6 +189,10 @@ export const RegisterProviderForm = ({
                   placeholder={translate.placeholders.phoneNumber}
                   required
                   id={ProviderFormEnum.phoneNumber}
+                  value={provider.phoneNumber}
+                  onChange={(event) =>
+                    onChange(event, ProviderFormEnum.phoneNumber)
+                  }
                 />
               </FloatingLabel>
             </Form.Group>
@@ -90,6 +211,8 @@ export const RegisterProviderForm = ({
                   placeholder={translate.placeholders.email}
                   required
                   id={ProviderFormEnum.email}
+                  value={provider.email}
+                  onChange={(event) => onChange(event, ProviderFormEnum.email)}
                 />
               </FloatingLabel>
             </Form.Group>
@@ -104,9 +227,13 @@ export const RegisterProviderForm = ({
                 className="mb-3"
               >
                 <FormControl
-                  type="url"
+                  type="text"
                   placeholder={translate.placeholders.website}
                   id={ProviderFormEnum.website}
+                  value={provider.website}
+                  onChange={(event) =>
+                    onChange(event, ProviderFormEnum.website)
+                  }
                 />
               </FloatingLabel>
             </Form.Group>
@@ -125,11 +252,16 @@ export const RegisterProviderForm = ({
                   placeholder={translate.placeholders.description}
                   style={{ height: "100px" }}
                   id={ProviderFormEnum.description}
+                  value={provider.description}
+                  onChange={(event) =>
+                    onChange(event, ProviderFormEnum.description)
+                  }
                 />
               </FloatingLabel>
             </Form.Group>
           </Col>
         </Row>
+        {renderSuccessMessage()}
         <Row>
           <Col md={6} className="d-flex justify-content-end">
             <Button type="submit" variant="primary">

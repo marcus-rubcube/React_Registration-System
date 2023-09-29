@@ -1,6 +1,5 @@
 import { ReactElement, useState } from "react";
 import {
-  Alert,
   Button,
   Col,
   Container,
@@ -18,6 +17,7 @@ import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ClientFormEnum } from "./enums/client-form";
 import { formsTranslates } from "./translations/ptBr";
 import { INITIAL_CLIENT_STATE } from "../../register-client/register-client-screen";
+import Message from "../message/message";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
@@ -121,7 +121,7 @@ export const RegisterClientForm = ({
     setSelectedClient(INITIAL_CLIENT_STATE);
   }
 
-  function resetForm(){
+  function resetForm() {
     setClient(INITIAL_CLIENT_STATE);
   }
 
@@ -171,6 +171,29 @@ export const RegisterClientForm = ({
     }
   }
 
+  function renderSuccessMessage() {
+    if (showSuccessRegister) {
+      if (editMode) {
+        return (
+          <Message
+            message={translate.successOnUpdate}
+            type="info"
+            setShowMessage={setShowSuccessRegister}
+          />
+        );
+      }
+
+      return (
+        <Message
+          message={translate.successOnRegister}
+          type="success"
+          setShowMessage={setShowSuccessRegister}
+        />
+      );
+    }
+    return <></>;
+  }
+
   return (
     <Container className="mt-5">
       <Form
@@ -191,6 +214,7 @@ export const RegisterClientForm = ({
                   id={ClientFormEnum.document}
                   onChange={(event) => onChange(event, ClientFormEnum.document)}
                   value={client.document}
+                  disabled={editMode}
                   required
                 />
               </FloatingLabel>
@@ -339,15 +363,7 @@ export const RegisterClientForm = ({
             </FloatingLabel>
           </Col>
         </Row>
-        {showSuccessRegister && (
-          <Row>
-            <Alert variant={editMode ? "info" : "success"}>
-              {editMode
-                ? translate.successOnUpdate
-                : translate.successOnRegister}
-            </Alert>
-          </Row>
-        )}
+        {renderSuccessMessage()}
         <Row>
           <Col md={6} className="d-flex justify-content-end">
             <Button type="submit" variant={"primary"}>

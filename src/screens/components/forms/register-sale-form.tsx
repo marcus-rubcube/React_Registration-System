@@ -1,6 +1,6 @@
 import { ReactElement } from "react";
 import {
-    Button,
+  Button,
   Col,
   Container,
   FloatingLabel,
@@ -8,14 +8,13 @@ import {
   FormControl,
   Row,
 } from "react-bootstrap";
-import { CategoryFormEnum } from "./enums/category-form";
 import { formsTranslates } from "./translations/ptBr";
 import { SaleForm } from "./enums/sale-form";
 
 const translate = formsTranslates.saleForm;
 
 interface props {
-    setShowForm: (value: boolean) => void;
+  setShowForm: (value: boolean) => void;
 }
 
 export const RegisterSaleForm = ({ setShowForm }: props): ReactElement => {
