@@ -10,10 +10,11 @@ import { NotFoundScreens } from "./screens/not-found/not-found";
 import { useState } from "react";
 import { Categorie } from "./screens/components/forms/register-categories-form";
 import { Provider } from "./screens/components/forms/register-provider-form";
+import { Purchase } from "./screens/components/forms/register-purchase-form";
 
 function App() {
-
-  const [categories,setCategories] = useState<Categorie[]>([])
+  const [categories, setCategories] = useState<Categorie[]>([]);
+  const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
 
   return (
@@ -26,17 +27,30 @@ function App() {
           />
           <Route
             path={translateMenu.routes.categories}
-            element={<RegisterCategoriesScreen
-              categories={categories}
-              setCategories={setCategories} />}
+            element={
+              <RegisterCategoriesScreen
+                categories={categories}
+                setCategories={setCategories}
+              />
+            }
           />
           <Route
             path={translateMenu.routes.provider}
-            element={<RegisterProviderScreen setProviders={setProviders} providers={providers}/>}
+            element={
+              <RegisterProviderScreen
+                setProviders={setProviders}
+                providers={providers}
+              />
+            }
           />
           <Route
             path={translateMenu.routes.products}
-            element={<RegisterProductsScreen providers={providers} categories={categories}/>}
+            element={
+              <RegisterProductsScreen
+                providers={providers}
+                categories={categories}
+              />
+            }
           />
           <Route
             path={translateMenu.routes.sale}
@@ -44,7 +58,13 @@ function App() {
           />
           <Route
             path={translateMenu.routes.purchase}
-            element={<RegisterPurchaseScreen />}
+            element={
+              <RegisterPurchaseScreen
+                providers={providers}
+                purchases={purchases}
+                setPurchases={setPurchases}
+              />
+            }
           />
           <Route path="/" element={<RegisterClientScreen />} />
           <Route path="*" element={<NotFoundScreens />} />

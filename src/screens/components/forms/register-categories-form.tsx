@@ -21,10 +21,6 @@ export interface Categorie {
   description: string
 }
 
-interface props {
-  setShowForm: (value: boolean) => void;
-}
-
 export interface CategorieProps {
   setShowForm: (value: boolean) => void;
   setCategories: React.Dispatch<React.SetStateAction<Categorie[]>>;

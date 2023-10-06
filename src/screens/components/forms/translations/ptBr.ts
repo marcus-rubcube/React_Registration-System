@@ -169,16 +169,21 @@ export const formsTranslates = {
       quantity: "Quantidade de Produtos",
       value: "Valor",
       paymentMethod: "Forma de Pagamento",
+      purchaseCode: "Código da compra"
     },
     placeholders: {
-      provider: "Digite o nome do fornecedor",
+      provider: "Selecione o fornecedor",
       quantity: "Digite a quantidade de produtos",
       value: "Digite o valor total da venda",
       paymentMethod: "Informe a forma de pagamento",
+      purchaseCode: "Degite o código da compra"
     },
     buttons: {
-      register: "Cadastrar venda",
+      register: "Cadastrar compra",
+      update: "Atualizar compra",
       goBack: "Voltar",
     },
+    successOnRegister: "Compra cadastrado com sucesso!",
+    successOnUpdate: "Compra atualizado com sucesso!",
   },
 };

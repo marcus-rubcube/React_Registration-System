@@ -62,11 +62,14 @@ export const tableTranslates = {
   },
   purchase: {
     tableHead:{
+      purchaseCode: "Identificador da Compra",
       provider: "Fornecedor",
       quantity: "Quantidade de Produtos",
       value: "Valor",
       paymentMethod: "Forma de Pagamento"
     },
-    goBackButtonLabel: "Nova Compra"
+    goBackButtonLabel: "Nova Compra",
+    wantToDelete: "Deseja realmente excluir esse fornecedor?",
+    noContent: "Ainda não há compras cadastrados",
   }
 };

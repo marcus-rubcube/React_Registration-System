@@ -1,6 +1,7 @@
 export enum PurchaseForm {
-    provider = "provider",
-    quantity = "quantity",
-    value = "value",
-    paymentMethod = "paymentMethod"
+  provider = "provider",
+  quantity = "quantity",
+  value = "value",
+  paymentMethod = "paymentMethod",
+  purchaseCode = "purchaseCode",
 }
