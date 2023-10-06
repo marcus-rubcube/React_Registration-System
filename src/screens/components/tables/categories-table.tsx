@@ -34,8 +34,8 @@ export const CategoriesTable = (props: CategorieProps) => {
           <td>{categorie.description}</td>
           <td>
             <ActionsButton
-              updateClient={() => updateClient(categorie)}
-              deleteClient={() => deleteClient(categorie.name)}
+              update={() => updateClient(categorie)}
+              deleteItem={() => deleteClient(categorie.name)}
             />
           </td>
         </tr>

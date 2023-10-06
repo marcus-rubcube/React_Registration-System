@@ -3,9 +3,11 @@ import { Page } from "../../common/components/page/page";
 import { RegisterProductForm } from "../components/forms/register-products-form";
 import { ProductsTable } from "../components/tables/pruducts-table";
 import { Provider } from "../components/forms/register-provider-form";
+import { Categorie } from "../components/forms/register-categories-form";
 
 interface RegisterProductsProps {
   providers: Provider[];
+  categories: Categorie[];
 }
 
 export interface Product {
@@ -34,6 +36,7 @@ export const INITIAL_PRODUCTS_STATE: Product = {
 
 export const RegisterProductsScreen = ({
   providers,
+  categories,
 }: RegisterProductsProps): ReactElement => {
   const [showForm, setShowForm] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
@@ -53,6 +56,7 @@ export const RegisterProductsScreen = ({
           setEditMode={setEditMode}
           selectedProduct={selectedProduct}
           editMode={editMode}
+          categories={categories}
         />
       ) : (
         <ProductsTable

@@ -16,10 +16,12 @@ import {
   Product,
 } from "../../register-products/register-products-screen";
 import Message from "../message/message";
+import { Categorie } from "./register-categories-form";
 
 interface ProductsProps {
   setShowForm: (value: boolean) => void;
   providers: Provider[];
+  categories: Categorie[];
   products: Product[];
   setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
   selectedProduct: Product;
@@ -42,10 +44,9 @@ export const RegisterProductForm = ({
   selectedProduct,
   setEditMode,
   setProducts,
+  categories,
   setSelectedProduct,
 }: ProductsProps): ReactElement => {
-  // receber infos da API
-  const categories = ["Eletrônicos", "Eletrodomésticos", "Móveis", "Roupas"];
   const [product, setProduct] = useState<Product>(selectedProduct);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
@@ -294,8 +295,8 @@ export const RegisterProductForm = ({
                 >
                   <option value="">{translate.placeholders.category}</option>
                   {categories.map((category, index) => (
-                    <option key={index} value={category}>
-                      {category}
+                    <option key={index} value={category.name}>
+                      {category.name}
                     </option>
                   ))}
                 </Form.Select>
