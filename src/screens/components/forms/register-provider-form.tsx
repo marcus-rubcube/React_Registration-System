@@ -151,6 +151,7 @@ export const RegisterProviderForm = ({
                   value={provider.document}
                   disabled={editMode}
                   required
+                  maxLength={14}
                 />
               </FloatingLabel>
             </Form.Group>

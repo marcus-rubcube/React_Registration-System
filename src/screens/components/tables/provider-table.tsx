@@ -42,8 +42,8 @@ export const ProvidersTable = ({
           <td>{provider.description}</td>
           <td>
             <ActionsButton
-              deleteClient={() => deleteProvider(provider.document)}
-              updateClient={() => updateProvider(provider)}
+              deleteItem={() => deleteProvider(provider.document)}
+              update={() => updateProvider(provider)}
             />
           </td>
         </tr>

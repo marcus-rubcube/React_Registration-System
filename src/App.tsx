@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { translateMenu } from "./common/components/menu/translations/ptBr";
-import { INITIAL_CATEGORIE_STATE, RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
+import { RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
 import { RegisterClientScreen } from "./screens/register-client/register-client-screen";
 import { RegisterProductsScreen } from "./screens/register-products/register-products-screen";
 import { RegisterProviderScreen } from "./screens/register-provider/register-provider-screen";
@@ -9,10 +9,13 @@ import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen
 import { NotFoundScreens } from "./screens/not-found/not-found";
 import { useState } from "react";
 import { Categorie } from "./screens/components/forms/register-categories-form";
+import { Provider } from "./screens/components/forms/register-provider-form";
 
 function App() {
 
   const [categories,setCategories] = useState<Categorie[]>([])
+  const [providers, setProviders] = useState<Provider[]>([]);
+
   return (
     <div className="App">
       <BrowserRouter>
@@ -29,11 +32,11 @@ function App() {
           />
           <Route
             path={translateMenu.routes.provider}
-            element={<RegisterProviderScreen />}
+            element={<RegisterProviderScreen setProviders={setProviders} providers={providers}/>}
           />
           <Route
             path={translateMenu.routes.products}
-            element={<RegisterProductsScreen />}
+            element={<RegisterProductsScreen providers={providers}/>}
           />
           <Route
             path={translateMenu.routes.sale}

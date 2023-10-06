@@ -48,6 +48,8 @@ export const tableTranslates = {
       provider: "Fornecedor"
     },
     goBackButtonLabel: "Novo Produto",
+    noContent: "Ainda não há produtos cadastrados",
+    wantToDelete: "Deseja realmente excluir esse produto?",
   },
   sale: {
     tableHead:{

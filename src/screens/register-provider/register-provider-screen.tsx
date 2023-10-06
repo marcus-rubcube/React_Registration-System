@@ -15,9 +15,16 @@ export const INITIAL_PROVIDER_STATE = {
   document: "",
 };
 
-export const RegisterProviderScreen = (): ReactElement => {
+interface RegisterProvidersProps {
+  setProviders: React.Dispatch<React.SetStateAction<Provider[]>>;
+  providers: Provider[];
+}
+
+export const RegisterProviderScreen = ({
+  setProviders,
+  providers,
+}: RegisterProvidersProps): ReactElement => {
   const [showForm, setShowForm] = useState(false);
-  const [providers, setProviders] = useState<Provider[]>([]);
   const [selectedProvider, setSelectedProvider] = useState<Provider>(
     INITIAL_PROVIDER_STATE
   );

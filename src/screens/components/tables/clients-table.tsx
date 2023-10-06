@@ -44,8 +44,8 @@ export const ClientsTable = ({
           <td>{zipCodeFormatter(client.zipCode)}</td>
           <td>
             <ActionsButton
-              deleteClient={() => deleteClient(client.document)}
-              updateClient={() => updateClient(client)}
+              deleteItem={() => deleteClient(client.document)}
+              update={() => updateClient(client)}
             />
           </td>
         </tr>

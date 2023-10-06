@@ -141,6 +141,8 @@ export const formsTranslates = {
       register: "Cadastrar Produto",
       goBack: "Voltar",
     },
+    successOnRegister: "Produto cadastrado com sucesso!",
+    successOnUpdate: "Produto atualizado com sucesso!",
   },
   saleForm: {
     labels: {
