@@ -1,14 +1,18 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { translateMenu } from "./common/components/menu/translations/ptBr";
-import { RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
+import { INITIAL_CATEGORIE_STATE, RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
 import { RegisterClientScreen } from "./screens/register-client/register-client-screen";
 import { RegisterProductsScreen } from "./screens/register-products/register-products-screen";
 import { RegisterProviderScreen } from "./screens/register-provider/register-provider-screen";
 import { RegisterPurchaseScreen } from "./screens/register-purchase/register-purchase-screen";
 import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen";
 import { NotFoundScreens } from "./screens/not-found/not-found";
+import { useState } from "react";
+import { Categorie } from "./screens/components/forms/register-categories-form";
 
 function App() {
+
+  const [categories,setCategories] = useState<Categorie[]>([])
   return (
     <div className="App">
       <BrowserRouter>
@@ -19,7 +23,9 @@ function App() {
           />
           <Route
             path={translateMenu.routes.categories}
-            element={<RegisterCategoriesScreen />}
+            element={<RegisterCategoriesScreen
+              categories={categories}
+              setCategories={setCategories} />}
           />
           <Route
             path={translateMenu.routes.provider}

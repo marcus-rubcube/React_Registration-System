@@ -18,6 +18,8 @@ export const tableTranslates = {
       name: "Nome",
     },
     goBackButtonLabel: "Nova Categoria",
+    noContent: "Ainda não há categorias cadastradas",
+    wantToDelete: "Deseja realmente excluir essa categoria?",
   },
   providers: {
     tableHead: {

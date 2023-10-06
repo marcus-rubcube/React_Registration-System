@@ -1,34 +1,71 @@
-import { Button, Container, Table } from "react-bootstrap";
+import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
+import { Categorie, CategorieProps } from "../forms/register-categories-form";
+import { ActionsButton } from "./components/actions-buttons/actions-button";
 
-interface CategoriesProps {
-  setShowForm: (value: boolean) => void;
-}
+export const CategoriesTable = (props: CategorieProps) => {
+  const {
+    setShowForm,
+    setCategories,
+    categories,
+    setEditMode,
+    setSelectedCategorie,
+  } = props;
 
-export const CategoriesTable = ({ setShowForm }: CategoriesProps) => {
+  const renderTableRow = (categorie: Categorie) => {
+    function deleteClient(name: string) {
+      if (window.confirm(`${tableTranslates.categories.wantToDelete}`)) {
+        setCategories(
+          categories.filter((categorie) => categorie.name !== name)
+        );
+      }
+    }
+
+    function updateClient(categorie: Categorie) {
+      setSelectedCategorie(categorie);
+      setEditMode(true);
+      setShowForm(true);
+    }
+
+    return (
+      <>
+        <tr>
+          <td>{categorie.name}</td>
+          <td>{categorie.description}</td>
+          <td>
+            <ActionsButton
+              updateClient={() => updateClient(categorie)}
+              deleteClient={() => deleteClient(categorie.name)}
+            />
+          </td>
+        </tr>
+      </>
+    );
+  };
+
   return (
     <Container className="mt-4">
       <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
         {tableTranslates.categories.goBackButtonLabel}
       </Button>
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>{tableTranslates.categories.tableHead.name}</th>
-            <th>{tableTranslates.categories.tableHead.description}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Celular</td>
-            <td>
-              {
-                "Celulares dos mais diversos tipos, com sistemas android, ios e windows phone"
-              }
-            </td>
-          </tr>
-        </tbody>
-      </Table>
+      {categories.length === 0 ? (
+        <Alert className="mt-3">{tableTranslates.categories.noContent}</Alert>
+      ) : (
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>{tableTranslates.categories.tableHead.name}</th>
+              <th>{tableTranslates.categories.tableHead.description}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {categories.length > 0 &&
+              categories.map((categorie: Categorie) =>
+                renderTableRow(categorie)
+              )}
+          </tbody>
+        </Table>
+      )}
     </Container>
   );
 };
