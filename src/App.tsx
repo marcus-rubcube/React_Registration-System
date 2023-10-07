@@ -11,11 +11,13 @@ import { useState } from "react";
 import { Categorie } from "./screens/components/forms/register-categories-form";
 import { Provider } from "./screens/components/forms/register-provider-form";
 import { Purchase } from "./screens/components/forms/register-purchase-form";
+import { Client } from "./screens/components/forms/register-client-form";
 
 function App() {
   const [categories, setCategories] = useState<Categorie[]>([]);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [providers, setProviders] = useState<Provider[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
 
   return (
     <div className="App">
@@ -23,7 +25,9 @@ function App() {
         <Routes>
           <Route
             path={translateMenu.routes.clients}
-            element={<RegisterClientScreen />}
+            element={
+              <RegisterClientScreen clients={clients} setClients={setClients} />
+            }
           />
           <Route
             path={translateMenu.routes.categories}
@@ -54,7 +58,9 @@ function App() {
           />
           <Route
             path={translateMenu.routes.sale}
-            element={<RegisterSaleScreen />}
+            element={<RegisterSaleScreen
+              clients={clients}
+              setClients={setClients} />}
           />
           <Route
             path={translateMenu.routes.purchase}
@@ -66,7 +72,12 @@ function App() {
               />
             }
           />
-          <Route path="/" element={<RegisterClientScreen />} />
+          <Route
+            path="/"
+            element={
+              <RegisterClientScreen clients={clients} setClients={setClients} />
+            }
+          />
           <Route path="*" element={<NotFoundScreens />} />
         </Routes>
       </BrowserRouter>

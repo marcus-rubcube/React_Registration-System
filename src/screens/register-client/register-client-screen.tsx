@@ -17,34 +17,39 @@ export const INITIAL_CLIENT_STATE = {
   zipCode: "",
 };
 
-export const RegisterClientScreen = (): ReactElement => {
-  const [showForm, setShowForm] = useState(false);
-  const [clients, setClients] = useState<Client[]>([]);
-  const [selectedClient, setSelectedClient] =
-    useState<Client>(INITIAL_CLIENT_STATE);
-  const [editMode, setEditMode] = useState(false);
+interface RegisterClientsProps {
+  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
+  clients: Client[];
+}
 
-  return (
-    <Page>
-      {showForm ? (
-        <RegisterClientForm
-          setShowForm={setShowForm}
-          setClients={setClients}
-          clients={clients}
-          setSelectedClient={setSelectedClient}
-          setEditMode={setEditMode}
-          selectedClient={selectedClient}
-          editMode={editMode}
-        />
-      ) : (
-        <ClientsTable
-          setShowForm={setShowForm}
-          clients={clients}
-          setClients={setClients}
-          setSelectedClient={setSelectedClient}
-          setEditMode={setEditMode}
-        />
-      )}
-    </Page>
-  );
-};
+export const RegisterClientScreen = ({ clients, setClients }:
+  RegisterClientsProps): ReactElement => {
+    const [showForm, setShowForm] = useState(false);
+    const [selectedClient, setSelectedClient] =
+      useState<Client>(INITIAL_CLIENT_STATE);
+    const [editMode, setEditMode] = useState(false);
+
+    return (
+      <Page>
+        {showForm ? (
+          <RegisterClientForm
+            setShowForm={setShowForm}
+            setClients={setClients}
+            clients={clients}
+            setSelectedClient={setSelectedClient}
+            setEditMode={setEditMode}
+            selectedClient={selectedClient}
+            editMode={editMode}
+          />
+        ) : (
+          <ClientsTable
+            setShowForm={setShowForm}
+            clients={clients}
+            setClients={setClients}
+            setSelectedClient={setSelectedClient}
+            setEditMode={setEditMode}
+          />
+        )}
+      </Page>
+    );
+  };

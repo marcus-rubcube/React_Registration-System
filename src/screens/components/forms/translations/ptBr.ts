@@ -152,7 +152,7 @@ export const formsTranslates = {
       paymentMethod: "Forma de Pagamento",
     },
     placeholders: {
-      client: "Digite o nome do cliente",
+      client: "Selecione o nome do cliente",
       quantity: "Digite a quantidade de produtos",
       value: "Digite o valor total da venda",
       paymentMethod: "Informe a forma de pagamento",
@@ -161,7 +161,10 @@ export const formsTranslates = {
     buttons: {
       register: "Cadastrar venda",
       goBack: "Voltar",
+      update: "Atualizar"
     },
+    successOnRegister: "Produto cadastrado com sucesso!",
+    successOnUpdate: "Produto atualizado com sucesso!",
   },
   purchaseForm: {
     labels: {

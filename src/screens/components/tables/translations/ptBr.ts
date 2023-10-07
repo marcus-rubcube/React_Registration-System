@@ -58,7 +58,9 @@ export const tableTranslates = {
       value: "Valor",
       paymentMethod: "Forma de Pagamento"
     },
-    goBackButtonLabel: "Nova Venda"
+    goBackButtonLabel: "Nova Venda",
+    wantToDelete: "Deseja realmente excluir essa venda?",
+    noContent: "Ainda não há vendas cadastrados",
   },
   purchase: {
     tableHead:{
