@@ -38,6 +38,7 @@ export const SaleTable = ({
     return (
       <>
         <tr>
+          <td>{sale.saleCode}</td>
           <td>{sale.client}</td>
           <td>{sale.quantity}</td>
           <td>R$ {sale.value}</td>
@@ -68,6 +69,7 @@ export const SaleTable = ({
       <Table striped bordered hover>
         <thead>
           <tr>
+            <th>{tableTranslates.sale.tableHead.saleCode}</th>
             <th>{tableTranslates.sale.tableHead.client}</th>
             <th>{tableTranslates.sale.tableHead.quantity}</th>
             <th>{tableTranslates.sale.tableHead.value}</th>

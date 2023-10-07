@@ -242,16 +242,18 @@ export const RegisterPurchaseForm = ({
                 label={translate.labels.paymentMethod}
                 className="mb-3"
               >
-                <FormControl
-                  type="text"
-                  placeholder={translate.placeholders.paymentMethod}
-                  id={PurchaseForm.paymentMethod}
-                  onChange={(event) =>
-                    onChange(event, PurchaseForm.paymentMethod)
-                  }
-                  value={purchase.paymentMethod}
+                <Form.Select
                   required
-                />
+                  onChange={(event) => onChange(event, PurchaseForm.paymentMethod)}
+                  value={purchase.paymentMethod}
+                >
+                  <option value="">
+                    {translate.placeholders.paymentMethod}
+                  </option>
+                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="PIX">PIX</option>
+                </Form.Select>
               </FloatingLabel>
               <Form.Control.Feedback type="invalid">
                 {translate.placeholders.paymentMethod}

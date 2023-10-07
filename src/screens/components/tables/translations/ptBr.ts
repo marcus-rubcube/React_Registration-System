@@ -53,6 +53,7 @@ export const tableTranslates = {
   },
   sale: {
     tableHead:{
+      saleCode: "Identificador da Venda",
       client: "Cliente",
       quantity: "Quantidade de Produtos",
       value: "Valor",

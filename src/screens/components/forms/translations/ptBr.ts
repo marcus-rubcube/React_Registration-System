@@ -150,6 +150,7 @@ export const formsTranslates = {
       quantity: "Quantidade de Produtos",
       value: "Valor",
       paymentMethod: "Forma de Pagamento",
+      saleCode: "Código da venda"
     },
     placeholders: {
       client: "Selecione o nome do cliente",
@@ -157,6 +158,7 @@ export const formsTranslates = {
       value: "Digite o valor total da venda",
       paymentMethod: "Informe a forma de pagamento",
       seller: "Digite o nome do vendedor",
+      saleCode: "Degite o código da venda"
     },
     buttons: {
       register: "Cadastrar venda",

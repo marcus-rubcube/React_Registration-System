@@ -30,7 +30,7 @@ interface props {
 }
 
 interface FormControlElement {
-  value:string
+  value: string;
 }
 
 export interface Sale {
@@ -38,26 +38,25 @@ export interface Sale {
   quantity: number | null;
   value: number | null;
   paymentMethod: string;
+  saleCode: string;
 }
 
-export const RegisterSaleForm = ({ 
-    setShowForm,
-    clients,
-    setSelectedSale,
-    setEditMode,
-    selectedSale,
-    setSale,
-    editMode,
-    sale,
- }: props): ReactElement => {
-
-  const [formSale,setFormSale] = useState<Sale>(selectedSale)
-  const [showSuccesRegister,setShowSuccessRegister] = useState(false)
-  const [validated,setValidated] = useState(false)
+export const RegisterSaleForm = ({
+  setShowForm,
+  clients,
+  setSelectedSale,
+  setEditMode,
+  selectedSale,
+  setSale,
+  editMode,
+  sale,
+}: props): ReactElement => {
+  const [formSale, setFormSale] = useState<Sale>(selectedSale);
+  const [showSuccesRegister, setShowSuccessRegister] = useState(false);
+  const [validated, setValidated] = useState(false);
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
     field: SaleForm
-
   ) {
     setFormSale({ ...formSale, [field]: event.currentTarget.value });
   }
@@ -67,45 +66,41 @@ export const RegisterSaleForm = ({
   }
 
   function resetForm() {
-    setFormSale(INITIAL_SALE_STATE)
+    setFormSale(INITIAL_SALE_STATE);
   }
 
-  function editSale(){
+  function editSale() {
     setSale([
-      ...sale.filter(
-        (saleItem) => saleItem.client !== saleItem.client
-      ),
-      formSale
-    ])
-    setSelectedSale(INITIAL_SALE_STATE)
+      ...sale.filter((saleItem) => saleItem.saleCode !== formSale.saleCode),
+      formSale,
+    ]);
+    setSelectedSale(INITIAL_SALE_STATE);
   }
 
-  function onSuccessAction(){
+  function onSuccessAction() {
     setShowSuccessRegister(true);
-    setTimeout(()=> {
+    setTimeout(() => {
       setShowSuccessRegister(false);
-      if(editMode){
+      if (editMode) {
         setShowForm(true);
       }
-      setEditMode(false)
-    },TIMEOUT)
+      setEditMode(false);
+    }, TIMEOUT);
     setValidated(false);
-    resetForm()
+    resetForm();
   }
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>){
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     const form = event.currentTarget;
-    if(form.checkValidity()){
-      if(!editMode){
+    if (form.checkValidity()) {
+      if (!editMode) {
         addSale();
-      }
-      else{
-        editSale()
+      } else {
+        editSale();
       }
       onSuccessAction();
-    }
-    else{
-      setValidated(true)
+    } else {
+      setValidated(true);
     }
 
     event.preventDefault();
@@ -135,15 +130,38 @@ export const RegisterSaleForm = ({
     return <></>;
   }
 
-
-
-
   return (
     <Container className="mt-5">
       <Form
-      noValidate
-      validated={validated}
-      onSubmit={(event)=>onSubmit(event)}>
+        noValidate
+        validated={validated}
+        onSubmit={(event) => onSubmit(event)}
+      >
+        <Row>
+          <Col>
+            <Form.Group>
+              <FloatingLabel
+                controlId="floatingInput"
+                label={translate.labels.saleCode}
+                className="mb-3"
+              >
+                <FormControl
+                  type="text"
+                  placeholder={translate.placeholders.saleCode}
+                  id={PurchaseForm.purchaseCode}
+                  onChange={(event) =>
+                    onChange(event, SaleForm.saleCode)
+                  }
+                  value={formSale.saleCode}
+                  required
+                />
+              </FloatingLabel>
+              <Form.Control.Feedback type="invalid">
+                {translate.placeholders.value}
+              </Form.Control.Feedback>
+            </Form.Group>
+          </Col>
+        </Row>
         <Row>
           <Col>
             <Form.Group>
@@ -152,7 +170,7 @@ export const RegisterSaleForm = ({
                 label={translate.labels.client}
                 className="mb-3"
               >
-              <Form.Select
+                <Form.Select
                   required
                   onChange={(event) => onChange(event, SaleForm.client)}
                   value={formSale.client}
@@ -184,9 +202,7 @@ export const RegisterSaleForm = ({
                   placeholder={translate.placeholders.quantity}
                   id={SaleForm.quantity}
                   required
-                  onChange={(event) =>
-                    onChange(event, SaleForm.quantity)
-                  }
+                  onChange={(event) => onChange(event, SaleForm.quantity)}
                   value={formSale.quantity || ""}
                 />
               </FloatingLabel>
@@ -209,9 +225,7 @@ export const RegisterSaleForm = ({
                   placeholder={translate.placeholders.value}
                   id={SaleForm.value}
                   required
-                  onChange={(event) =>
-                    onChange(event, SaleForm.value)
-                  }
+                  onChange={(event) => onChange(event, SaleForm.value)}
                   value={formSale.value || ""}
                 />
               </FloatingLabel>
@@ -234,17 +248,12 @@ export const RegisterSaleForm = ({
                   onChange={(event) => onChange(event, SaleForm.paymentMethod)}
                   value={formSale.paymentMethod}
                 >
-                  <option value="">{translate.placeholders.paymentMethod}</option>
-                    <option value="Cartão de Crédito">
-                     Cartão de Crédito
-                    </option>
-                    <option value="Dinheiro">
-                     Dinheiro
-                    </option>
-                    <option value="PIX">
-                     PIX
-                    </option>
-             
+                  <option value="">
+                    {translate.placeholders.paymentMethod}
+                  </option>
+                  <option value="Cartão de Crédito">Cartão de Crédito</option>
+                  <option value="Dinheiro">Dinheiro</option>
+                  <option value="PIX">PIX</option>
                 </Form.Select>
               </FloatingLabel>
               <Form.Control.Feedback type="invalid">
