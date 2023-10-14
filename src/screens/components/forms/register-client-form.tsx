@@ -16,13 +16,13 @@ import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ClientFormEnum } from "./enums/client-form";
 import { formsTranslates } from "./translations/ptBr";
-import { INITIAL_CLIENT_STATE } from "../../register-client/register-client-screen";
+import { INITIAL_CLIENT_STATE } from "../../../redux/clientReducer";
 import Message from "../message/message";
+import { useDispatch } from "react-redux";
+import { add, update } from "../../../redux/clientReducer";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
-  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
-  clients: Client[];
   selectedClient: Client;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -50,8 +50,6 @@ const translate = formsTranslates.clientForms;
 
 export const RegisterClientForm = ({
   setShowForm,
-  clients,
-  setClients,
   editMode,
   selectedClient,
   setSelectedClient,
@@ -91,6 +89,7 @@ export const RegisterClientForm = ({
   const [client, setClient] = useState<Client>(selectedClient);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+  const dispatch = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -108,16 +107,11 @@ export const RegisterClientForm = ({
   }
 
   function addClient() {
-    setClients([...clients, client]);
+    dispatch(add(client));
   }
 
   function editClient() {
-    setClients([
-      ...clients.filter(
-        (clientItem) => clientItem.document !== client.document
-      ),
-      client,
-    ]);
+    dispatch(update(client));
     setSelectedClient(INITIAL_CLIENT_STATE);
   }
 

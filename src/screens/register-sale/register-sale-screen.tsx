@@ -13,12 +13,10 @@ export const INITIAL_SALE_STATE: Sale = {
 };
 
 interface RegisterSaleProps {
-  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   clients: Client[];
 }
 
 export const RegisterSaleScreen = ({
-  setClients,
   clients,
 }: RegisterSaleProps): ReactElement => {
   const [showForm, setShowForm] = useState(false);

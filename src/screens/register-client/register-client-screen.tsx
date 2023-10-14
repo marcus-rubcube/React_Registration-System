@@ -5,24 +5,13 @@ import {
   RegisterClientForm,
 } from "../components/forms/register-client-form";
 import { ClientsTable } from "../components/tables/clients-table";
-
-export const INITIAL_CLIENT_STATE = {
-  document: "",
-  name: "",
-  neighborhood: "",
-  address: "",
-  city: "",
-  uf: "SP",
-  number: "",
-  zipCode: "",
-};
+import { INITIAL_CLIENT_STATE } from "../../redux/clientReducer";
 
 interface RegisterClientsProps {
-  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   clients: Client[];
 }
 
-export const RegisterClientScreen = ({ clients, setClients }:
+export const RegisterClientScreen = ({ clients }:
   RegisterClientsProps): ReactElement => {
     const [showForm, setShowForm] = useState(false);
     const [selectedClient, setSelectedClient] =
@@ -34,8 +23,6 @@ export const RegisterClientScreen = ({ clients, setClients }:
         {showForm ? (
           <RegisterClientForm
             setShowForm={setShowForm}
-            setClients={setClients}
-            clients={clients}
             setSelectedClient={setSelectedClient}
             setEditMode={setEditMode}
             selectedClient={selectedClient}
@@ -45,7 +32,6 @@ export const RegisterClientScreen = ({ clients, setClients }:
           <ClientsTable
             setShowForm={setShowForm}
             clients={clients}
-            setClients={setClients}
             setSelectedClient={setSelectedClient}
             setEditMode={setEditMode}
           />

@@ -4,11 +4,12 @@ import { Client } from "../forms/register-client-form";
 import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { useDispatch } from "react-redux";
+import { remove } from "../../../redux/clientReducer";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
   clients: Client[];
-  setClients: React.Dispatch<React.SetStateAction<Client[]>>;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedClient: React.Dispatch<React.SetStateAction<Client>>;
 }
@@ -16,14 +17,14 @@ interface ClientsProps {
 export const ClientsTable = ({
   setShowForm,
   clients,
-  setClients,
   setEditMode,
   setSelectedClient,
 }: ClientsProps) => {
+  const dispatch = useDispatch();
   const renderTableRow = (client: Client) => {
     function deleteClient(document: string) {
       if (window.confirm(`${tableTranslates.clients.wantToDelete}`)) {
-        setClients(clients.filter((client) => client.document !== document));
+        dispatch(remove(client));
       }
     }
 
