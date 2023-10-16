@@ -13,6 +13,8 @@ import { PurchaseForm } from "./enums/purchase-form";
 import { Provider, TIMEOUT } from "./register-provider-form";
 import Message from "../message/message";
 import { INITIAL_PURCHASE_STATE } from "../../register-purchase/register-purchase-screen";
+import { useDispatch } from "react-redux";
+import { addPurchases, updatePurchase } from "../../../redux/purchaseReducer";
 
 const translate = formsTranslates.purchaseForm;
 
@@ -20,7 +22,6 @@ interface props {
   setShowForm: (value: boolean) => void;
   providers: Provider[];
   purchases: Purchase[];
-  setPurchases: React.Dispatch<React.SetStateAction<Purchase[]>>;
   selectedPurchase: Purchase;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -46,12 +47,13 @@ export const RegisterPurchaseForm = ({
   purchases,
   selectedPurchase,
   setEditMode,
-  setPurchases,
   setSelectedPurchase,
 }: props): ReactElement => {
   const [purchase, setPurchase] = useState<Purchase>(selectedPurchase);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+
+  const dispatch = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -61,7 +63,7 @@ export const RegisterPurchaseForm = ({
   }
 
   function addPurchase() {
-    setPurchases([...purchases, purchase]);
+    dispatch(addPurchases(purchase));
   }
 
   function resetForm() {
@@ -69,12 +71,7 @@ export const RegisterPurchaseForm = ({
   }
 
   function editPurchase() {
-    setPurchases([
-      ...purchases.filter(
-        (purchaseItem) => purchaseItem.purchaseCode !== purchase.purchaseCode
-      ),
-      purchase,
-    ]);
+    dispatch(updatePurchase(purchase));
     setSelectedPurchase(INITIAL_PURCHASE_STATE);
   }
 
@@ -272,7 +269,12 @@ export const RegisterPurchaseForm = ({
             <Button
               type="button"
               variant={"secondary"}
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedPurchase(INITIAL_PURCHASE_STATE);
+                setEditMode(false);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>

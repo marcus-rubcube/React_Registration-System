@@ -16,13 +16,11 @@ export const INITIAL_PURCHASE_STATE: Purchase = {
 };
 
 interface RegiterPurchaseProps {
-  setPurchases: React.Dispatch<React.SetStateAction<Purchase[]>>;
   purchases: Purchase[];
   providers: Provider[];
 }
 
 export const RegisterPurchaseScreen = ({
-  setPurchases,
   purchases,
   providers,
 }: RegiterPurchaseProps): ReactElement => {
@@ -37,7 +35,6 @@ export const RegisterPurchaseScreen = ({
       {showForm ? (
         <RegisterPurchaseForm
           setShowForm={setShowForm}
-          setPurchases={setPurchases}
           purchases={purchases}
           setSelectedPurchase={setSelectedPurchase}
           setEditMode={setEditMode}
@@ -49,7 +46,6 @@ export const RegisterPurchaseScreen = ({
         <PurchaseTable
           setShowForm={setShowForm}
           purchases={purchases}
-          setPurchases={setPurchases}
           setSelectedPurchase={setSelectedPurchase}
           setEditMode={setEditMode}
         />

@@ -266,7 +266,12 @@ export const RegisterProviderForm = ({
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedProvider(INITIAL_PROVIDER_STATE);
+                setEditMode(false);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>

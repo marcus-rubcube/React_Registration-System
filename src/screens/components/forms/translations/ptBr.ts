@@ -165,8 +165,8 @@ export const formsTranslates = {
       goBack: "Voltar",
       update: "Atualizar"
     },
-    successOnRegister: "Produto cadastrado com sucesso!",
-    successOnUpdate: "Produto atualizado com sucesso!",
+    successOnRegister: "Venda cadastrado com sucesso!",
+    successOnUpdate: "Venda atualizado com sucesso!",
   },
   purchaseForm: {
     labels: {

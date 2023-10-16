@@ -11,12 +11,14 @@ import {
 import { ProductFormEnum } from "./enums/product-form";
 import { formsTranslates } from "./translations/ptBr";
 import { Provider, TIMEOUT } from "./register-provider-form";
-import {
-  Product,
-} from "../../register-products/register-products-screen";
+import { Product } from "../../register-products/register-products-screen";
 import Message from "../message/message";
 import { Category } from "./register-categories-form";
-import { INITIAL_PRODUCTS_STATE, addProduct, removeProduct } from "../../../redux/productReducer";
+import {
+  INITIAL_PRODUCTS_STATE,
+  addProduct,
+  removeProduct,
+} from "../../../redux/productReducer";
 import { useDispatch } from "react-redux";
 
 interface ProductsProps {
@@ -58,7 +60,7 @@ export const RegisterProductForm = ({
   }
 
   function addProducts() {
-    dispatch(addProduct(product)); 
+    dispatch(addProduct(product));
   }
 
   function resetForm() {
@@ -66,7 +68,7 @@ export const RegisterProductForm = ({
   }
 
   function editProduct() {
-    dispatch(removeProduct(product)); 
+    dispatch(removeProduct(product));
     setSelectedProduct(INITIAL_PRODUCTS_STATE);
   }
 
@@ -336,7 +338,12 @@ export const RegisterProductForm = ({
             <Button
               type="button"
               variant="secondary"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedProduct(INITIAL_PRODUCTS_STATE);
+                setEditMode(false);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>

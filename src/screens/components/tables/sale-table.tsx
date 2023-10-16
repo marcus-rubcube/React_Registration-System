@@ -2,11 +2,12 @@ import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Sale } from "../forms/register-sale-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { useDispatch } from "react-redux";
+import { removeSale } from "../../../redux/saleReducer";
 
 interface SaleProps {
   setShowForm: (value: boolean) => void;
   sales: Sale[];
-  setSales: (value: Sale[]) => void;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedSale: React.Dispatch<React.SetStateAction<Sale>>;
 }
@@ -14,18 +15,17 @@ interface SaleProps {
 export const SaleTable = ({
   setShowForm,
   sales,
-  setSales,
   setEditMode,
   setSelectedSale
 }: SaleProps) => {
 
+  const dispatch = useDispatch();
+
   const renderTableRow = (sale: Sale) => {
 
-    function deletePurchase(saleName: string) {
+    function deletePurchase() {
       if (window.confirm(`${tableTranslates.sale.wantToDelete}`)) {
-        setSales(
-          sales.filter((sale) => sale.client !== saleName)
-        );
+        dispatch(removeSale(sale));
       }
     }
 
@@ -45,7 +45,7 @@ export const SaleTable = ({
           <td>{sale.paymentMethod}</td>
           <td>
             <ActionsButton
-              deleteItem={() => deletePurchase(sale.client)}
+              deleteItem={() => deletePurchase()}
               update={() => updateSale(sale)}
             />
           </td>
@@ -61,7 +61,7 @@ export const SaleTable = ({
   function renderContent() {
     if (sales.length === 0) {
       return (
-        <Alert className="mt-3">{tableTranslates.purchase.noContent}</Alert>
+        <Alert className="mt-3">{tableTranslates.sale.noContent}</Alert>
       );
     }
 

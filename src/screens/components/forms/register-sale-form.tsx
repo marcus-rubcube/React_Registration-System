@@ -15,14 +15,14 @@ import { INITIAL_SALE_STATE } from "../../register-sale/register-sale-screen";
 import { TIMEOUT } from "./register-provider-form";
 import Message from "../message/message";
 import { PurchaseForm } from "./enums/purchase-form";
+import { useDispatch } from "react-redux";
+import { addSales, updateSale } from "../../../redux/saleReducer";
 
 const translate = formsTranslates.saleForm;
 
 interface props {
   setShowForm: (value: boolean) => void;
   clients: Client[];
-  sale: Sale[];
-  setSale: React.Dispatch<React.SetStateAction<Sale[]>>;
   selectedSale: Sale;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -47,13 +47,14 @@ export const RegisterSaleForm = ({
   setSelectedSale,
   setEditMode,
   selectedSale,
-  setSale,
   editMode,
-  sale,
 }: props): ReactElement => {
   const [formSale, setFormSale] = useState<Sale>(selectedSale);
   const [showSuccesRegister, setShowSuccessRegister] = useState(false);
   const [validated, setValidated] = useState(false);
+
+  const dispatch = useDispatch();
+
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
     field: SaleForm
@@ -62,7 +63,7 @@ export const RegisterSaleForm = ({
   }
 
   function addSale() {
-    setSale([...sale, formSale]);
+    dispatch(addSales(formSale));
   }
 
   function resetForm() {
@@ -70,10 +71,7 @@ export const RegisterSaleForm = ({
   }
 
   function editSale() {
-    setSale([
-      ...sale.filter((saleItem) => saleItem.saleCode !== formSale.saleCode),
-      formSale,
-    ]);
+    dispatch(updateSale(formSale));
     setSelectedSale(INITIAL_SALE_STATE);
   }
 
@@ -198,7 +196,7 @@ export const RegisterSaleForm = ({
                 className="mb-3"
               >
                 <FormControl
-                  type="text"
+                  type="number"
                   placeholder={translate.placeholders.quantity}
                   id={SaleForm.quantity}
                   required
@@ -221,7 +219,7 @@ export const RegisterSaleForm = ({
                 className="mb-3"
               >
                 <FormControl
-                  type="text"
+                  type="number"
                   placeholder={translate.placeholders.value}
                   id={SaleForm.value}
                   required
@@ -273,7 +271,12 @@ export const RegisterSaleForm = ({
             <Button
               type="button"
               variant={"secondary"}
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                resetForm();
+                setSelectedSale(INITIAL_SALE_STATE);
+                setEditMode(false);
+                setShowForm(false);
+              }}
             >
               {translate.buttons.goBack}
             </Button>

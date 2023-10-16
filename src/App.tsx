@@ -1,9 +1,7 @@
-import { useState } from "react";
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { translateMenu } from "./common/components/menu/translations/ptBr";
 import { ReduxState } from "./redux/types";
-import { Purchase } from "./screens/components/forms/register-purchase-form";
 import { NotFoundScreens } from "./screens/not-found/not-found";
 import { RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
 import { RegisterClientScreen } from "./screens/register-client/register-client-screen";
@@ -13,7 +11,9 @@ import { RegisterPurchaseScreen } from "./screens/register-purchase/register-pur
 import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen";
 
 function App() {
-  const [purchases, setPurchases] = useState<Purchase[]>([]);
+  const purchases = useSelector(
+    (state: ReduxState) => state.purchases.purchasesList
+  );
   const providers = useSelector(
     (state: ReduxState) => state.providers.providerList
   );
@@ -61,7 +61,6 @@ function App() {
               <RegisterPurchaseScreen
                 providers={providers}
                 purchases={purchases}
-                setPurchases={setPurchases}
               />
             }
           />

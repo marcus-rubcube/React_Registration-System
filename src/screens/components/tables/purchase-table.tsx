@@ -2,11 +2,12 @@ import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Purchase } from "../forms/register-purchase-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { useDispatch } from "react-redux";
+import { removePurchase } from "../../../redux/purchaseReducer";
 
 interface PurchaseProps {
   setShowForm: (value: boolean) => void;
   purchases: Purchase[];
-  setPurchases: (value: Purchase[]) => void;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedPurchase: React.Dispatch<React.SetStateAction<Purchase>>;
 }
@@ -15,15 +16,14 @@ export const PurchaseTable = ({
   setShowForm,
   purchases,
   setEditMode,
-  setPurchases,
   setSelectedPurchase,
 }: PurchaseProps) => {
+  const dispatch = useDispatch();
+
   const renderTableRow = (purchase: Purchase) => {
-    function deletePurchase(purchaseCode: string) {
+    function deletePurchase() {
       if (window.confirm(`${tableTranslates.purchase.wantToDelete}`)) {
-        setPurchases(
-          purchases.filter((purchase) => purchase.purchaseCode !== purchaseCode)
-        );
+        dispatch(removePurchase(purchase));
       }
     }
 
@@ -43,7 +43,7 @@ export const PurchaseTable = ({
           <td>{`R$ ${purchase.value}`}</td>
           <td>
             <ActionsButton
-              deleteItem={() => deletePurchase(purchase.purchaseCode)}
+              deleteItem={() => deletePurchase()}
               update={() => updatePurchase(purchase)}
             />
           </td>
