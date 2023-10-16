@@ -1,28 +1,29 @@
 import { Alert, Button, Container, Table } from "react-bootstrap";
-import { tableTranslates } from "./translations/ptBr";
-import { Categorie, CategorieProps } from "../forms/register-categories-form";
+import { useDispatch } from "react-redux";
+import { removeCategory } from "../../../redux/categoryReducer";
+import { CategorieProps, Category } from "../forms/register-categories-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { tableTranslates } from "./translations/ptBr";
 
 export const CategoriesTable = (props: CategorieProps) => {
   const {
     setShowForm,
-    setCategories,
     categories,
     setEditMode,
     setSelectedCategorie,
   } = props;
 
-  const renderTableRow = (categorie: Categorie) => {
-    function deleteClient(name: string) {
+  const dispatch = useDispatch();
+
+  const renderTableRow = (category: Category) => {
+    function deleteCategory() {
       if (window.confirm(`${tableTranslates.categories.wantToDelete}`)) {
-        setCategories(
-          categories.filter((categorie) => categorie.name !== name)
-        );
+        dispatch(removeCategory(category));
       }
     }
 
-    function updateClient(categorie: Categorie) {
-      setSelectedCategorie(categorie);
+    function updateCategory(category: Category) {
+      setSelectedCategorie(category);
       setEditMode(true);
       setShowForm(true);
     }
@@ -30,12 +31,12 @@ export const CategoriesTable = (props: CategorieProps) => {
     return (
       <>
         <tr>
-          <td>{categorie.name}</td>
-          <td>{categorie.description}</td>
+          <td>{category.name}</td>
+          <td>{category.description}</td>
           <td>
             <ActionsButton
-              update={() => updateClient(categorie)}
-              deleteItem={() => deleteClient(categorie.name)}
+              update={() => updateCategory(category)}
+              deleteItem={() => deleteCategory()}
             />
           </td>
         </tr>
@@ -60,7 +61,7 @@ export const CategoriesTable = (props: CategorieProps) => {
           </thead>
           <tbody>
             {categories.length > 0 &&
-              categories.map((categorie: Categorie) =>
+              categories.map((categorie: Category) =>
                 renderTableRow(categorie)
               )}
           </tbody>

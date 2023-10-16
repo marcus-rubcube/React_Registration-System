@@ -10,12 +10,11 @@ import {
 } from "react-bootstrap";
 import { ProviderFormEnum } from "./enums/provider-form";
 import { formsTranslates } from "./translations/ptBr";
-import { INITIAL_PROVIDER_STATE } from "../../register-provider/register-provider-screen";
+import { INITIAL_PROVIDER_STATE, addProvider, updateProvider } from "../../../redux/providerReducer";
 import Message from "../message/message";
+import { useDispatch } from "react-redux";
 interface ProvidersProps {
   setShowForm: (value: boolean) => void;
-  setProviders: React.Dispatch<React.SetStateAction<Provider[]>>;
-  providers: Provider[];
   selectedProvider: Provider;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -41,15 +40,14 @@ export const TIMEOUT = 2000;
 export const RegisterProviderForm = ({
   setShowForm,
   editMode,
-  providers,
   selectedProvider,
   setEditMode,
-  setProviders,
   setSelectedProvider,
 }: ProvidersProps): ReactElement => {
   const [provider, setProvider] = useState<Provider>(selectedProvider);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+  const dispatch = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -59,7 +57,7 @@ export const RegisterProviderForm = ({
   }
 
   function addProviders() {
-    setProviders([...providers, provider]);
+    dispatch(addProvider(provider));
   }
 
   function resetForm() {
@@ -67,12 +65,7 @@ export const RegisterProviderForm = ({
   }
 
   function editProvider() {
-    setProviders([
-      ...providers.filter(
-        (providerItem) => providerItem.document !== provider.document
-      ),
-      provider,
-    ]);
+    dispatch(updateProvider(provider));
     setSelectedProvider(INITIAL_PROVIDER_STATE);
   }
 

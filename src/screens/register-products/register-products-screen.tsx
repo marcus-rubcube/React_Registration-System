@@ -1,13 +1,16 @@
 import { ReactElement, useState } from "react";
 import { Page } from "../../common/components/page/page";
 import { RegisterProductForm } from "../components/forms/register-products-form";
-import { ProductsTable } from "../components/tables/pruducts-table";
+import { ProductsTable } from "../components/tables/products-table";
 import { Provider } from "../components/forms/register-provider-form";
-import { Categorie } from "../components/forms/register-categories-form";
+import { Category } from "../components/forms/register-categories-form";
+import { INITIAL_PRODUCTS_STATE } from "../../redux/productReducer";
+import { useSelector } from "react-redux";
+import { ReduxState } from "../../redux/types";
 
 interface RegisterProductsProps {
   providers: Provider[];
-  categories: Categorie[];
+  categories: Category[];
 }
 
 export interface Product {
@@ -22,36 +25,22 @@ export interface Product {
   provider: string;
 }
 
-export const INITIAL_PRODUCTS_STATE: Product = {
-  name: "",
-  description: "",
-  unitPrice: "",
-  stockQuantity: 0,
-  brand: "",
-  category: "",
-  manufacturingDate: "",
-  model: "",
-  provider: "",
-};
-
 export const RegisterProductsScreen = ({
   providers,
   categories,
 }: RegisterProductsProps): ReactElement => {
   const [showForm, setShowForm] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product>(
     INITIAL_PRODUCTS_STATE
   );
   const [editMode, setEditMode] = useState(false);
+  const products = useSelector((state: ReduxState) => state.products.productList);
   return (
     <Page>
       {showForm ? (
         <RegisterProductForm
           setShowForm={setShowForm}
           providers={providers}
-          products={products}
-          setProducts={setProducts}
           setSelectedProduct={setSelectedProduct}
           setEditMode={setEditMode}
           selectedProduct={selectedProduct}
@@ -62,7 +51,6 @@ export const RegisterProductsScreen = ({
         <ProductsTable
           setShowForm={setShowForm}
           products={products}
-          setProducts={setProducts}
           setSelectedProduct={setSelectedProduct}
           setEditMode={setEditMode}
         />

@@ -2,11 +2,12 @@ import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Provider } from "../forms/register-provider-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { removeProvider } from "../../../redux/providerReducer";
+import { useDispatch } from "react-redux";
 
 interface ProvidersProps {
   setShowForm: (value: boolean) => void;
   providers: Provider[];
-  setProviders: (value: Provider[]) => void;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedProvider: React.Dispatch<React.SetStateAction<Provider>>;
 }
@@ -16,12 +17,13 @@ export const ProvidersTable = ({
   setEditMode,
   setSelectedProvider,
   setShowForm,
-  setProviders,
 }: ProvidersProps) => {
+  const dispatch = useDispatch();
   const renderTableRow = (provider: Provider) => {
-    function deleteProvider(document: string) {
+
+    function deleteProvider() {
       if (window.confirm(`${tableTranslates.providers.wantToDelete}`)) {
-        setProviders(providers.filter((provider) => provider.document !== document));
+        dispatch(removeProvider(provider));
       }
     }
 
@@ -42,7 +44,7 @@ export const ProvidersTable = ({
           <td>{provider.description}</td>
           <td>
             <ActionsButton
-              deleteItem={() => deleteProvider(provider.document)}
+              deleteItem={() => deleteProvider()}
               update={() => updateProvider(provider)}
             />
           </td>

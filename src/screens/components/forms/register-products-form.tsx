@@ -12,18 +12,17 @@ import { ProductFormEnum } from "./enums/product-form";
 import { formsTranslates } from "./translations/ptBr";
 import { Provider, TIMEOUT } from "./register-provider-form";
 import {
-  INITIAL_PRODUCTS_STATE,
   Product,
 } from "../../register-products/register-products-screen";
 import Message from "../message/message";
-import { Categorie } from "./register-categories-form";
+import { Category } from "./register-categories-form";
+import { INITIAL_PRODUCTS_STATE, addProduct, removeProduct } from "../../../redux/productReducer";
+import { useDispatch } from "react-redux";
 
 interface ProductsProps {
   setShowForm: (value: boolean) => void;
   providers: Provider[];
-  categories: Categorie[];
-  products: Product[];
-  setProducts: React.Dispatch<React.SetStateAction<Product[]>>;
+  categories: Category[];
   selectedProduct: Product;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -40,16 +39,16 @@ export const RegisterProductForm = ({
   setShowForm,
   providers,
   editMode,
-  products,
   selectedProduct,
   setEditMode,
-  setProducts,
   categories,
   setSelectedProduct,
 }: ProductsProps): ReactElement => {
   const [product, setProduct] = useState<Product>(selectedProduct);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+
+  const dispatch = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -59,7 +58,7 @@ export const RegisterProductForm = ({
   }
 
   function addProducts() {
-    setProducts([...products, product]);
+    dispatch(addProduct(product)); 
   }
 
   function resetForm() {
@@ -67,10 +66,7 @@ export const RegisterProductForm = ({
   }
 
   function editProduct() {
-    setProducts([
-      ...products.filter((productItem) => productItem.name !== product.name),
-      product,
-    ]);
+    dispatch(removeProduct(product)); 
     setSelectedProduct(INITIAL_PRODUCTS_STATE);
   }
 

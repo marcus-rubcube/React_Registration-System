@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { translateMenu } from "./common/components/menu/translations/ptBr";
 import { ReduxState } from "./redux/types";
-import { Categorie } from "./screens/components/forms/register-categories-form";
-import { Provider } from "./screens/components/forms/register-provider-form";
 import { Purchase } from "./screens/components/forms/register-purchase-form";
 import { NotFoundScreens } from "./screens/not-found/not-found";
 import { RegisterCategoriesScreen } from "./screens/register-categories/register-categories-screen";
@@ -15,10 +13,14 @@ import { RegisterPurchaseScreen } from "./screens/register-purchase/register-pur
 import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen";
 
 function App() {
-  const [categories, setCategories] = useState<Categorie[]>([]);
   const [purchases, setPurchases] = useState<Purchase[]>([]);
-  const [providers, setProviders] = useState<Provider[]>([]);
+  const providers = useSelector(
+    (state: ReduxState) => state.providers.providerList
+  );
   const clients = useSelector((state: ReduxState) => state.clients.clientsList);
+  const categories = useSelector(
+    (state: ReduxState) => state.categories.categoriesList
+  );
 
   return (
     <div className="App">
@@ -26,27 +28,19 @@ function App() {
         <Routes>
           <Route
             path={translateMenu.routes.clients}
-            element={
-              <RegisterClientScreen clients={clients} />
-            }
+            element={<RegisterClientScreen clients={clients} />}
           />
           <Route
             path={translateMenu.routes.categories}
             element={
               <RegisterCategoriesScreen
                 categories={categories}
-                setCategories={setCategories}
               />
             }
           />
           <Route
             path={translateMenu.routes.provider}
-            element={
-              <RegisterProviderScreen
-                setProviders={setProviders}
-                providers={providers}
-              />
-            }
+            element={<RegisterProviderScreen providers={providers} />}
           />
           <Route
             path={translateMenu.routes.products}
@@ -73,9 +67,7 @@ function App() {
           />
           <Route
             path="/"
-            element={
-              <RegisterClientScreen clients={clients} />
-            }
+            element={<RegisterClientScreen clients={clients} />}
           />
           <Route path="*" element={<NotFoundScreens />} />
         </Routes>

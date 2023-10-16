@@ -10,57 +10,53 @@ import {
 } from "react-bootstrap";
 import { CategoryFormEnum } from "./enums/category-form";
 import { formsTranslates } from "./translations/ptBr";
-import { INITIAL_CATEGORIE_STATE } from "../../register-categories/register-categories-screen";
 import { TIMEOUT } from "./register-provider-form";
 import Message from "../message/message";
+import { INITIAL_CATEGORY_STATE, addCategory, updateCategory } from "../../../redux/categoryReducer";
+import { useDispatch } from "react-redux";
 
 const translate = formsTranslates.categoriesForm;
 
-export interface Categorie {
-  name: string,
-  description: string
+export interface Category {
+  name: string;
+  description: string;
 }
 
 export interface CategorieProps {
   setShowForm: (value: boolean) => void;
-  setCategories: React.Dispatch<React.SetStateAction<Categorie[]>>;
-  categories: Categorie[];
-  selectedCategorie: Categorie;
+  selectedCategorie: Category;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectedCategorie: React.Dispatch<React.SetStateAction<Categorie>>;
+  setSelectedCategorie: React.Dispatch<React.SetStateAction<Category>>;
+  categories: Category[];
 }
 
 export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
+  const {
+    setShowForm,
+    selectedCategorie,
+    editMode,
+    setEditMode,
+    setSelectedCategorie,
+  } = props;
 
-
-
-
-  const { setShowForm, setCategories, categories,
-    selectedCategorie, editMode, setEditMode, setSelectedCategorie } = props
-
-  const [categorie, setCategorie] = useState<Categorie>(selectedCategorie)
+  const [category, setCategory] = useState<Category>(selectedCategorie);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
   const [validated, setValidated] = useState(false);
+  const dispatch = useDispatch();
 
-  function addCategorie() {
-    setCategories([...categories, categorie])
+  function addCategories() {
+    dispatch(addCategory(category))
   }
 
   function editCategorie() {
-    setCategories([
-      ...categories.filter(
-        (categorieItem) => categorieItem.name !== categorie.name
-      ),
-      categorie,
-    ]);
-    setSelectedCategorie(INITIAL_CATEGORIE_STATE);
+    dispatch(updateCategory(category));
+    setSelectedCategorie(INITIAL_CATEGORY_STATE);
   }
 
   function resetForm() {
-    setCategorie(INITIAL_CATEGORIE_STATE);
+    setCategory(INITIAL_CATEGORY_STATE);
   }
-
 
   function onSuccessAction() {
     setShowSuccessRegister(true);
@@ -79,7 +75,7 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
     const form = event.currentTarget;
     if (form.checkValidity()) {
       if (!editMode) {
-        addCategorie();
+        addCategories();
       } else {
         editCategorie();
       }
@@ -120,25 +116,23 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
       <Form
         noValidate
         validated={validated}
-        onSubmit={(event) => onSubmit(event)}>
+        onSubmit={(event) => onSubmit(event)}
+      >
         <Row>
           <Col>
             <Form.Group>
-              <FloatingLabel
-                label={translate.labels.name}
-                className="mb-3"
-              >
+              <FloatingLabel label={translate.labels.name} className="mb-3">
                 <FormControl
                   type="text"
                   placeholder={translate.placeholders.name}
                   id={CategoryFormEnum.name}
                   required
-                  value={categorie.name}
+                  value={category.name}
                   onChange={(event) => {
-                    setCategorie({
-                      ...categorie,
-                      name: event.currentTarget.value
-                    })
+                    setCategory({
+                      ...category,
+                      name: event.currentTarget.value,
+                    });
                   }}
                 />
               </FloatingLabel>
@@ -159,12 +153,12 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
                   type="text"
                   placeholder={translate.placeholders.description}
                   id={CategoryFormEnum.description}
-                  value={categorie.description}
+                  value={category.description}
                   onChange={(event) => {
-                    setCategorie({
-                      ...categorie,
-                      description: event.currentTarget.value
-                    })
+                    setCategory({
+                      ...category,
+                      description: event.currentTarget.value,
+                    });
                   }}
                 />
               </FloatingLabel>
@@ -178,7 +172,7 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
         <Row>
           <Col md={6} className="d-flex justify-content-end">
             <Button type="submit" variant={"primary"}>
-            {editMode ? translate.buttons.update : translate.buttons.register}
+              {editMode ? translate.buttons.update : translate.buttons.register}
             </Button>
           </Col>
           <Col md={6}>
@@ -186,11 +180,12 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
               type="button"
               variant={"secondary"}
               onClick={() => {
-                resetForm()
-                setSelectedCategorie(INITIAL_CATEGORIE_STATE);
+                resetForm();
+                setSelectedCategorie(INITIAL_CATEGORY_STATE);
                 setEditMode(false);
                 setShowForm(false);
-              }}>
+              }}
+            >
               {translate.buttons.goBack}
             </Button>
           </Col>

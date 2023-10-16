@@ -22,7 +22,8 @@ export const ClientsTable = ({
 }: ClientsProps) => {
   const dispatch = useDispatch();
   const renderTableRow = (client: Client) => {
-    function deleteClient(document: string) {
+
+    function deleteClient() {
       if (window.confirm(`${tableTranslates.clients.wantToDelete}`)) {
         dispatch(remove(client));
       }
@@ -45,7 +46,7 @@ export const ClientsTable = ({
           <td>{zipCodeFormatter(client.zipCode)}</td>
           <td>
             <ActionsButton
-              deleteItem={() => deleteClient(client.document)}
+              deleteItem={() => deleteClient()}
               update={() => updateClient(client)}
             />
           </td>

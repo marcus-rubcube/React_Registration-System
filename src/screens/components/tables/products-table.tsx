@@ -2,11 +2,12 @@ import { Alert, Button, Container, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Product } from "../../register-products/register-products-screen";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
+import { removeProduct } from "../../../redux/productReducer";
+import { useDispatch } from "react-redux";
 
 interface ProductsProps {
   setShowForm: (value: boolean) => void;
   products: Product[];
-  setProducts: (value: Product[]) => void;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedProduct: React.Dispatch<React.SetStateAction<Product>>;
 }
@@ -15,13 +16,13 @@ export const ProductsTable = ({
   setShowForm,
   products,
   setEditMode,
-  setProducts,
   setSelectedProduct,
 }: ProductsProps) => {
+  const dispatch = useDispatch();
   const renderTableRow = (product: Product) => {
     function deleteProduct(name: string) {
       if (window.confirm(`${tableTranslates.providers.wantToDelete}`)) {
-        setProducts(products.filter((product) => product.name !== name));
+        dispatch(removeProduct(product));
       }
     }
 
