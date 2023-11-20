@@ -1,3 +1,4 @@
+import { ThunkDispatch } from "@reduxjs/toolkit";
 import { ReactElement, useState } from "react";
 import {
   Button,
@@ -7,17 +8,27 @@ import {
   Form,
   FormControl,
   Row,
+  Spinner,
 } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import { useToasts } from "react-toast-notifications";
+import { AnyAction } from "redux";
+import {
+  CategoryState,
+  INITIAL_CATEGORY_STATE,
+  atualizarCategoria,
+  cadastrarCategoria,
+} from "../../../redux/categoryReducer";
+import { ReduxState } from "../../../redux/types";
+import STATE from "../../../resources/state";
+import Message from "../message/message";
 import { CategoryFormEnum } from "./enums/category-form";
 import { formsTranslates } from "./translations/ptBr";
-import { TIMEOUT } from "./register-provider-form";
-import Message from "../message/message";
-import { INITIAL_CATEGORY_STATE, addCategory, updateCategory } from "../../../redux/categoryReducer";
-import { useDispatch } from "react-redux";
 
 const translate = formsTranslates.categoriesForm;
 
 export interface Category {
+  id: string;
   name: string;
   description: string;
 }
@@ -28,7 +39,6 @@ export interface CategorieProps {
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedCategorie: React.Dispatch<React.SetStateAction<Category>>;
-  categories: Category[];
 }
 
 export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
@@ -43,14 +53,42 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
   const [category, setCategory] = useState<Category>(selectedCategorie);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
   const [validated, setValidated] = useState(false);
-  const dispatch = useDispatch();
+  const { addToast, removeAllToasts } = useToasts();
+  const { status, message } = useSelector(
+    (state: ReduxState) => state.categories
+  );
+  const dispatch: ThunkDispatch<CategoryState, any, AnyAction> = useDispatch();
 
   function addCategories() {
-    dispatch(addCategory(category))
+    dispatch(cadastrarCategoria(category));
+    if (status === STATE.PENDENTE) {
+      return <Spinner />;
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      addToast(message, { appearance: "error" });
+      setTimeout(() => {
+        removeAllToasts();
+      }, 2000);
+    }
   }
 
   function editCategorie() {
-    dispatch(updateCategory(category));
+    dispatch(atualizarCategoria(category));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      addToast(message, { appearance: "error" });
+      setTimeout(() => {
+        removeAllToasts();
+      }, 2000);
+    }
     setSelectedCategorie(INITIAL_CATEGORY_STATE);
   }
 
@@ -66,7 +104,7 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
         setShowForm(false);
       }
       setEditMode(false);
-    }, TIMEOUT);
+    }, 3000);
     setValidated(false);
     resetForm();
   }
@@ -79,7 +117,6 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
       } else {
         editCategorie();
       }
-      onSuccessAction();
     } else {
       setValidated(true);
     }

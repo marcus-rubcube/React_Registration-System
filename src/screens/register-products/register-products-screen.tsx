@@ -1,16 +1,14 @@
 import { ReactElement, useState } from "react";
-import { Page } from "../../common/components/page/page";
-import { RegisterProductForm } from "../components/forms/register-products-form";
-import { ProductsTable } from "../components/tables/products-table";
-import { Provider } from "../components/forms/register-provider-form";
-import { Category } from "../components/forms/register-categories-form";
-import { INITIAL_PRODUCTS_STATE } from "../../redux/productReducer";
 import { useSelector } from "react-redux";
+import { Page } from "../../common/components/page/page";
+import { INITIAL_PRODUCTS_STATE } from "../../redux/productReducer";
 import { ReduxState } from "../../redux/types";
+import { RegisterProductForm } from "../components/forms/register-products-form";
+import { Provider } from "../components/forms/register-provider-form";
+import { ProductsTable } from "../components/tables/products-table";
 
 interface RegisterProductsProps {
   providers: Provider[];
-  categories: Category[];
 }
 
 export interface Product {
@@ -27,14 +25,20 @@ export interface Product {
 
 export const RegisterProductsScreen = ({
   providers,
-  categories,
 }: RegisterProductsProps): ReactElement => {
   const [showForm, setShowForm] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product>(
     INITIAL_PRODUCTS_STATE
   );
   const [editMode, setEditMode] = useState(false);
-  const products = useSelector((state: ReduxState) => state.products.productList);
+  const products = useSelector(
+    (state: ReduxState) => state.products.productList
+  );
+
+  const { categoriesList } = useSelector(
+    (state: ReduxState) => state.categories
+  );
+
   return (
     <Page>
       {showForm ? (
@@ -45,7 +49,7 @@ export const RegisterProductsScreen = ({
           setEditMode={setEditMode}
           selectedProduct={selectedProduct}
           editMode={editMode}
-          categories={categories}
+          categories={categoriesList}
         />
       ) : (
         <ProductsTable

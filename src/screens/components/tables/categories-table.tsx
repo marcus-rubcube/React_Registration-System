@@ -1,24 +1,38 @@
-import { Alert, Button, Container, Table } from "react-bootstrap";
-import { useDispatch } from "react-redux";
-import { removeCategory } from "../../../redux/categoryReducer";
+import { Alert, Button, Container, Spinner, Table } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
 import { CategorieProps, Category } from "../forms/register-categories-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
 import { tableTranslates } from "./translations/ptBr";
+import {
+  CategoryState,
+  buscarCategorias,
+  removerCategoria,
+} from "../../../redux/categoryReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { ReduxState } from "../../../redux/types";
+
+import { useEffect } from "react";
+import STATE from "../../../resources/state";
+import { useToasts } from "react-toast-notifications";
 
 export const CategoriesTable = (props: CategorieProps) => {
-  const {
-    setShowForm,
-    categories,
-    setEditMode,
-    setSelectedCategorie,
-  } = props;
+  const { setShowForm, setEditMode, setSelectedCategorie } = props;
+  const { addToast, removeAllToasts } = useToasts();
 
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch<CategoryState, any, AnyAction> = useDispatch();
+  const { status, categoriesList, message } = useSelector(
+    (state: ReduxState) => state.categories
+  );
+
+  useEffect(() => {
+    dispatch(buscarCategorias());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const renderTableRow = (category: Category) => {
     function deleteCategory() {
       if (window.confirm(`${tableTranslates.categories.wantToDelete}`)) {
-        dispatch(removeCategory(category));
+        dispatch(removerCategoria(category.id));
       }
     }
 
@@ -44,12 +58,25 @@ export const CategoriesTable = (props: CategorieProps) => {
     );
   };
 
+  if (status === STATE.ERRO) {
+    addToast(message, { appearance: "error" });
+    setTimeout(() => {
+      removeAllToasts();
+    }, 2000);
+  } else if (status === STATE.PENDENTE) {
+    return (
+      <Container className="mt-4">
+        <Spinner animation="border" role="status"></Spinner>
+      </Container>
+    );
+  }
+
   return (
     <Container className="mt-4">
       <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
         {tableTranslates.categories.goBackButtonLabel}
       </Button>
-      {categories.length === 0 ? (
+      {categoriesList.length === 0 ? (
         <Alert className="mt-3">{tableTranslates.categories.noContent}</Alert>
       ) : (
         <Table striped bordered hover>
@@ -60,8 +87,8 @@ export const CategoriesTable = (props: CategorieProps) => {
             </tr>
           </thead>
           <tbody>
-            {categories.length > 0 &&
-              categories.map((categorie: Category) =>
+            {categoriesList.length > 0 &&
+              categoriesList.map((categorie: Category) =>
                 renderTableRow(categorie)
               )}
           </tbody>
