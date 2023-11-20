@@ -7,6 +7,7 @@ import {
   CategoryState,
   buscarCategorias,
   removerCategoria,
+  setStatusIdle,
 } from "../../../redux/categoryReducer";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { ReduxState } from "../../../redux/types";
@@ -56,7 +57,7 @@ export const CategoriesTable = (props: CategorieProps) => {
       </>
     );
   };
-  
+
   if (status === STATE.ERRO) {
     toast.error(
       () => (
@@ -76,7 +77,14 @@ export const CategoriesTable = (props: CategorieProps) => {
 
   return (
     <Container className="mt-4">
-      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
+      <Button
+        type="button"
+        onClick={() => {
+          setShowForm(true);
+          dispatch(setStatusIdle());
+        }}
+        className="mb-3"
+      >
         {tableTranslates.categories.goBackButtonLabel}
       </Button>
       {categoriesList.length === 0 ? (

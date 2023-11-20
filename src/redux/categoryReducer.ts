@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import STATE from "../resources/state";
 import { Category } from "../screens/components/forms/register-categories-form";
 
@@ -156,6 +156,8 @@ export const removerCategoria = createAsyncThunk(
   }
 );
 
+export const setStatusIdle = createAction("category/setStatusIdle");
+
 const categoriesSlicer = createSlice({
   name: "category",
   initialState,
@@ -238,6 +240,9 @@ const categoriesSlicer = createSlice({
       console.log(action.error);
       state.status = STATE.ERRO;
       state.message = action.error.message as string;
+    });
+    builder.addCase(setStatusIdle, (state) => {
+      state.status = STATE.OCIOSO;
     });
   },
 });
