@@ -1,6 +1,5 @@
 import { useSelector } from "react-redux";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { ToastProvider } from "react-toast-notifications";
 import { translateMenu } from "./common/components/menu/translations/ptBr";
 import { ReduxState } from "./redux/types";
 import { NotFoundScreens } from "./screens/not-found/not-found";
@@ -10,6 +9,8 @@ import { RegisterProductsScreen } from "./screens/register-products/register-pro
 import { RegisterProviderScreen } from "./screens/register-provider/register-provider-screen";
 import { RegisterPurchaseScreen } from "./screens/register-purchase/register-purchase-screen";
 import { RegisterSaleScreen } from "./screens/register-sale/register-sale-screen";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const purchases = useSelector(
@@ -22,46 +23,45 @@ function App() {
 
   return (
     <div className="App">
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route
-              path={translateMenu.routes.clients}
-              element={<RegisterClientScreen clients={clients} />}
-            />
-            <Route
-              path={translateMenu.routes.categories}
-              element={<RegisterCategoriesScreen />}
-            />
-            <Route
-              path={translateMenu.routes.provider}
-              element={<RegisterProviderScreen providers={providers} />}
-            />
-            <Route
-              path={translateMenu.routes.products}
-              element={<RegisterProductsScreen providers={providers} />}
-            />
-            <Route
-              path={translateMenu.routes.sale}
-              element={<RegisterSaleScreen clients={clients} />}
-            />
-            <Route
-              path={translateMenu.routes.purchase}
-              element={
-                <RegisterPurchaseScreen
-                  providers={providers}
-                  purchases={purchases}
-                />
-              }
-            />
-            <Route
-              path="/"
-              element={<RegisterClientScreen clients={clients} />}
-            />
-            <Route path="*" element={<NotFoundScreens />} />
-          </Routes>
-        </BrowserRouter>
-      </ToastProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route
+            path={translateMenu.routes.clients}
+            element={<RegisterClientScreen clients={clients} />}
+          />
+          <Route
+            path={translateMenu.routes.categories}
+            element={<RegisterCategoriesScreen />}
+          />
+          <Route
+            path={translateMenu.routes.provider}
+            element={<RegisterProviderScreen providers={providers} />}
+          />
+          <Route
+            path={translateMenu.routes.products}
+            element={<RegisterProductsScreen providers={providers} />}
+          />
+          <Route
+            path={translateMenu.routes.sale}
+            element={<RegisterSaleScreen clients={clients} />}
+          />
+          <Route
+            path={translateMenu.routes.purchase}
+            element={
+              <RegisterPurchaseScreen
+                providers={providers}
+                purchases={purchases}
+              />
+            }
+          />
+          <Route
+            path="/"
+            element={<RegisterClientScreen clients={clients} />}
+          />
+          <Route path="*" element={<NotFoundScreens />} />
+        </Routes>
+      </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }

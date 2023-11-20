@@ -13,11 +13,10 @@ import { ReduxState } from "../../../redux/types";
 
 import { useEffect } from "react";
 import STATE from "../../../resources/state";
-import { useToasts } from "react-toast-notifications";
+import { toast } from "react-toastify";
 
 export const CategoriesTable = (props: CategorieProps) => {
   const { setShowForm, setEditMode, setSelectedCategorie } = props;
-  const { addToast, removeAllToasts } = useToasts();
 
   const dispatch: ThunkDispatch<CategoryState, any, AnyAction> = useDispatch();
   const { status, categoriesList, message } = useSelector(
@@ -57,12 +56,16 @@ export const CategoriesTable = (props: CategorieProps) => {
       </>
     );
   };
-
+  
   if (status === STATE.ERRO) {
-    addToast(message, { appearance: "error" });
-    setTimeout(() => {
-      removeAllToasts();
-    }, 2000);
+    toast.error(
+      () => (
+        <div>
+          <p>{message}</p>
+        </div>
+      ),
+      { toastId: status }
+    );
   } else if (status === STATE.PENDENTE) {
     return (
       <Container className="mt-4">

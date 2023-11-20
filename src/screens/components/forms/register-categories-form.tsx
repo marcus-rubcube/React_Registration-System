@@ -11,7 +11,6 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useToasts } from "react-toast-notifications";
 import { AnyAction } from "redux";
 import {
   CategoryState,
@@ -24,6 +23,7 @@ import STATE from "../../../resources/state";
 import Message from "../message/message";
 import { CategoryFormEnum } from "./enums/category-form";
 import { formsTranslates } from "./translations/ptBr";
+import { toast } from "react-toastify";
 
 const translate = formsTranslates.categoriesForm;
 
@@ -53,7 +53,6 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
   const [category, setCategory] = useState<Category>(selectedCategorie);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
   const [validated, setValidated] = useState(false);
-  const { addToast, removeAllToasts } = useToasts();
   const { status, message } = useSelector(
     (state: ReduxState) => state.categories
   );
@@ -66,10 +65,14 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
     } else if (status === STATE.OCIOSO) {
       onSuccessAction();
     } else {
-      addToast(message, { appearance: "error" });
-      setTimeout(() => {
-        removeAllToasts();
-      }, 2000);
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
     }
   }
 
@@ -84,10 +87,14 @@ export const RegisterCategoriesForm = (props: CategorieProps): ReactElement => {
     } else if (status === STATE.OCIOSO) {
       onSuccessAction();
     } else {
-      addToast(message, { appearance: "error" });
-      setTimeout(() => {
-        removeAllToasts();
-      }, 2000);
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
     }
     setSelectedCategorie(INITIAL_CATEGORY_STATE);
   }
