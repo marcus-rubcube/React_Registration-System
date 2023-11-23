@@ -7,13 +7,7 @@ import {
 import { ProvidersTable } from "../components/tables/provider-table";
 import { INITIAL_PROVIDER_STATE } from "../../redux/providerReducer";
 
-interface RegisterProvidersProps {
-  providers: Provider[];
-}
-
-export const RegisterProviderScreen = ({
-  providers,
-}: RegisterProvidersProps): ReactElement => {
+export const RegisterProviderScreen = (): ReactElement => {
   const [showForm, setShowForm] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState<Provider>(
     INITIAL_PROVIDER_STATE
@@ -32,7 +26,6 @@ export const RegisterProviderScreen = ({
       ) : (
         <ProvidersTable
           setShowForm={setShowForm}
-          providers={providers}
           setSelectedProvider={setSelectedProvider}
           setEditMode={setEditMode}
         />

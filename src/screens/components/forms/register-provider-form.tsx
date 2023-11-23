@@ -7,12 +7,17 @@ import {
   FloatingLabel,
   FormControl,
   Button,
+  Spinner,
 } from "react-bootstrap";
 import { ProviderFormEnum } from "./enums/provider-form";
 import { formsTranslates } from "./translations/ptBr";
-import { INITIAL_PROVIDER_STATE, addProvider, updateProvider } from "../../../redux/providerReducer";
+import { INITIAL_PROVIDER_STATE, ProviderState, atualizarFornecedor, cadastrarFornecedor } from "../../../redux/providerReducer";
 import Message from "../message/message";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { ReduxState } from "../../../redux/types";
+import { toast } from "react-toastify";
+import STATE from "../../../resources/state";
 interface ProvidersProps {
   setShowForm: (value: boolean) => void;
   selectedProvider: Provider;
@@ -47,7 +52,10 @@ export const RegisterProviderForm = ({
   const [provider, setProvider] = useState<Provider>(selectedProvider);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
-  const dispatch = useDispatch();
+  const { status, message } = useSelector(
+    (state: ReduxState) => state.providers
+  );
+  const dispatch: ThunkDispatch<ProviderState, any, AnyAction> = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -57,7 +65,21 @@ export const RegisterProviderForm = ({
   }
 
   function addProviders() {
-    dispatch(addProvider(provider));
+    dispatch(cadastrarFornecedor(provider));
+    if (status === STATE.PENDENTE) {
+      return <Spinner />;
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
   }
 
   function resetForm() {
@@ -65,7 +87,25 @@ export const RegisterProviderForm = ({
   }
 
   function editProvider() {
-    dispatch(updateProvider(provider));
+    dispatch(atualizarFornecedor(provider));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
     setSelectedProvider(INITIAL_PROVIDER_STATE);
   }
 
