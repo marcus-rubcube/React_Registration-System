@@ -22,7 +22,7 @@ const initialState: CategoryState = {
 
 export const buscarCategorias = createAsyncThunk("category/get", async () => {
   try {
-    const response = await fetch("http://localhost:3000/category", {
+    const response = await fetch("http://localhost:4000/category", {
       method: "GET",
     });
     const data = await response.json();
@@ -54,7 +54,7 @@ export const cadastrarCategoria = createAsyncThunk(
   "category/post",
   async (category: Category) => {
     try {
-      const response = await fetch("http://localhost:3000/category", {
+      const response = await fetch("http://localhost:4000/category", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(category),
@@ -89,7 +89,7 @@ export const atualizarCategoria = createAsyncThunk(
   async (category: Category) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/category/${category.id}`,
+        `http://localhost:4000/category/${category.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -126,7 +126,7 @@ export const removerCategoria = createAsyncThunk(
   async (categoryID: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/category/${categoryID}`,
+        `http://localhost:4000/category/${categoryID}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },

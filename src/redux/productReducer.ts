@@ -31,7 +31,7 @@ const initialState: ProductState = {
 
 export const buscarProducts = createAsyncThunk("product/get", async () => {
   try {
-    const response = await fetch("http://localhost:3000/product", {
+    const response = await fetch("http://localhost:4000/product", {
       method: "GET",
     });
     const data = await response.json();
@@ -45,8 +45,7 @@ export const buscarProducts = createAsyncThunk("product/get", async () => {
       return {
         status: false,
         lista: [],
-        message:
-          "Ocorreu um erro ao recuperar os produtos da base de dados.",
+        message: "Ocorreu um erro ao recuperar os produtos da base de dados.",
       };
     }
   } catch (error: any) {
@@ -64,7 +63,7 @@ export const cadastrarProduto = createAsyncThunk(
   "product/post",
   async (product: Product) => {
     try {
-      const response = await fetch("http://localhost:3000/product", {
+      const response = await fetch("http://localhost:4000/product", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,7 +74,7 @@ export const cadastrarProduto = createAsyncThunk(
           brand: product.brand,
           manufacturingDate: product.manufacturingDate.split("T")[0],
           categoryId: product.category.id.toString(),
-          providerDocument: product.provider.document,
+          providerId: product.provider.id.toString(),
           model: product.model,
         }),
       });
@@ -89,8 +88,7 @@ export const cadastrarProduto = createAsyncThunk(
       } else {
         return {
           status: false,
-          message:
-            "Ocorreu um erro ao cadastrar o produto na base de dados.",
+          message: "Ocorreu um erro ao cadastrar o produto na base de dados.",
           produto: product,
         };
       }
@@ -110,7 +108,7 @@ export const atualizarProduto = createAsyncThunk(
   async (produto: Product) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/product/${produto.id}`,
+        `http://localhost:4000/product/${produto.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -122,7 +120,7 @@ export const atualizarProduto = createAsyncThunk(
             brand: produto.brand,
             manufacturingDate: produto.manufacturingDate.split("T")[0],
             categoryId: produto.category.id.toString(),
-            providerDocument: produto.provider.document,
+            providerId: produto.provider.id.toString(),
             model: produto.model,
           }),
         }
@@ -137,8 +135,7 @@ export const atualizarProduto = createAsyncThunk(
       } else {
         return {
           status: false,
-          message:
-            "Ocorreu um erro ao atualizar o produto na base de dados.",
+          message: "Ocorreu um erro ao atualizar o produto na base de dados.",
           produto: produto,
         };
       }
@@ -157,13 +154,10 @@ export const removerProduto = createAsyncThunk(
   "produto/delete",
   async (id: string) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/product/${id}`,
-        {
-          method: "DELETE",
-          headers: { "Content-Type": "application/json" },
-        }
-      );
+      const response = await fetch(`http://localhost:4000/product/${id}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
       const data = await response.json();
       if (data.status) {
         return {
@@ -243,8 +237,7 @@ const productSlicer = createSlice({
         state.status = STATE.OCIOSO;
         state.message = action.payload.message as string;
         const index = state.productList.findIndex(
-          (produto) =>
-            produto.id === action.payload.produto?.id
+          (produto) => produto.id === action.payload.produto?.id
         );
         state.productList[index] = action.payload.produto as Product;
       }

@@ -1,31 +1,42 @@
-import { Alert, Button, Container, Table } from "react-bootstrap";
+import { Alert, Button, Container, Spinner, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Client } from "../forms/register-client-form";
 import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
-import { useDispatch } from "react-redux";
-import { remove } from "../../../redux/clientReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { ClientState, buscarClientes, removerCliente, setStatusIdle } from "../../../redux/clientReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { ReduxState } from "../../../redux/types";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+import STATE from "../../../resources/state";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
-  clients: Client[];
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectedClient: React.Dispatch<React.SetStateAction<Client>>;
 }
 
 export const ClientsTable = ({
   setShowForm,
-  clients,
   setEditMode,
   setSelectedClient,
 }: ClientsProps) => {
-  const dispatch = useDispatch();
-  const renderTableRow = (client: Client) => {
+  const dispatch: ThunkDispatch<ClientState, any, AnyAction> = useDispatch();
+  const { status, clientsList, message } = useSelector(
+    (state: ReduxState) => state.clients
+  );
 
+  useEffect(() => {
+    dispatch(buscarClientes());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const renderTableRow = (client: Client) => {
     function deleteClient() {
       if (window.confirm(`${tableTranslates.clients.wantToDelete}`)) {
-        dispatch(remove(client));
+        dispatch(removerCliente(client.document));
       }
     }
 
@@ -55,8 +66,25 @@ export const ClientsTable = ({
     );
   };
 
+  if (status === STATE.ERRO) {
+    toast.error(
+      () => (
+        <div>
+          <p>{message}</p>
+        </div>
+      ),
+      { toastId: status }
+    );
+  } else if (status === STATE.PENDENTE) {
+    return (
+      <Container className="mt-4">
+        <Spinner animation="border" role="status"></Spinner>
+      </Container>
+    );
+  }
+
   function renderContent() {
-    if (clients.length === 0) {
+    if (clientsList.length === 0) {
       return (
         <Alert className="mt-3">{tableTranslates.clients.noContent}</Alert>
       );
@@ -74,14 +102,21 @@ export const ClientsTable = ({
             <th>{tableTranslates.clients.tableHead.zipCode}</th>
           </tr>
         </thead>
-        <tbody>{clients.map((client: Client) => renderTableRow(client))}</tbody>
+        <tbody>{clientsList.map((client: Client) => renderTableRow(client))}</tbody>
       </Table>
     );
   }
 
   return (
     <Container className="mt-4">
-      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
+      <Button
+        type="button"
+        onClick={() => {
+          setShowForm(true);
+          dispatch(setStatusIdle());
+        }}
+        className="mb-3"
+      >
         {tableTranslates.clients.goBackButtonLabel}
       </Button>
       {renderContent()}

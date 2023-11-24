@@ -2,7 +2,7 @@ import { Alert, Button, Container, Spinner, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Product } from "../../register-products/register-products-screen";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
-import { buscarProducts, removerProduto } from "../../../redux/productReducer";
+import { buscarProducts, removerProduto, setStatusIdle } from "../../../redux/productReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
 import { CategoryState } from "../../../redux/categoryReducer";
@@ -120,7 +120,14 @@ export const ProductsTable = ({
 
   return (
     <Container className="mt-4">
-      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
+      <Button
+        type="button"
+        onClick={() => {
+          setShowForm(true);
+          dispatch(setStatusIdle());
+        }}
+        className="mb-3"
+      >
         {tableTranslates.products.goBackButtonLabel}
       </Button>
       {renderContent()}

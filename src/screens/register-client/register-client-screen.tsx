@@ -7,12 +7,7 @@ import {
 import { ClientsTable } from "../components/tables/clients-table";
 import { INITIAL_CLIENT_STATE } from "../../redux/clientReducer";
 
-interface RegisterClientsProps {
-  clients: Client[];
-}
-
-export const RegisterClientScreen = ({ clients }:
-  RegisterClientsProps): ReactElement => {
+export const RegisterClientScreen = (): ReactElement => {
     const [showForm, setShowForm] = useState(false);
     const [selectedClient, setSelectedClient] =
       useState<Client>(INITIAL_CLIENT_STATE);
@@ -31,7 +26,6 @@ export const RegisterClientScreen = ({ clients }:
         ) : (
           <ClientsTable
             setShowForm={setShowForm}
-            clients={clients}
             setSelectedClient={setSelectedClient}
             setEditMode={setEditMode}
           />

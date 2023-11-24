@@ -7,6 +7,7 @@ import {
   Form,
   FormControl,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import {
   ViaCepResponse,
@@ -16,10 +17,14 @@ import { documentFormatter } from "../../../utils/document-formatter";
 import { zipCodeFormatter } from "../../../utils/zipcode-formatter";
 import { ClientFormEnum } from "./enums/client-form";
 import { formsTranslates } from "./translations/ptBr";
-import { INITIAL_CLIENT_STATE } from "../../../redux/clientReducer";
+import { ClientState, INITIAL_CLIENT_STATE, atualizarCliente, cadastrarCliente } from "../../../redux/clientReducer";
 import Message from "../message/message";
-import { useDispatch } from "react-redux";
-import { add, update } from "../../../redux/clientReducer";
+import { useDispatch, useSelector } from "react-redux";
+import {  } from "../../../redux/clientReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { ReduxState } from "../../../redux/types";
+import { toast } from "react-toastify";
+import STATE from "../../../resources/state";
 
 interface ClientsProps {
   setShowForm: (value: boolean) => void;
@@ -30,6 +35,7 @@ interface ClientsProps {
 }
 
 export interface Client {
+  id: number;
   document: string;
   name: string;
   neighborhood: string;
@@ -89,7 +95,10 @@ export const RegisterClientForm = ({
   const [client, setClient] = useState<Client>(selectedClient);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
-  const dispatch = useDispatch();
+  const { status, message } = useSelector(
+    (state: ReduxState) => state.clients
+  );
+  const dispatch: ThunkDispatch<ClientState, any, AnyAction> = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
@@ -107,11 +116,43 @@ export const RegisterClientForm = ({
   }
 
   function addClient() {
-    dispatch(add(client));
+    dispatch(cadastrarCliente(client));
+    if (status === STATE.PENDENTE) {
+      return <Spinner />;
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
   }
 
   function editClient() {
-    dispatch(update(client));
+    dispatch(atualizarCliente(client));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
     setSelectedClient(INITIAL_CLIENT_STATE);
   }
 

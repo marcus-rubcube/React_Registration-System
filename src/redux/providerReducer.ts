@@ -9,6 +9,7 @@ export interface ProviderState {
 }
 
 export const INITIAL_PROVIDER_STATE = {
+  id: 0,
   name: "",
   phoneNumber: "",
   email: "",
@@ -25,7 +26,7 @@ const initialState: ProviderState = {
 
 export const buscarProviders = createAsyncThunk("provider/get", async () => {
   try {
-    const response = await fetch("http://localhost:3000/provider", {
+    const response = await fetch("http://localhost:4000/provider", {
       method: "GET",
     });
     const data = await response.json();
@@ -58,7 +59,7 @@ export const cadastrarFornecedor = createAsyncThunk(
   "provider/post",
   async (provider: Provider) => {
     try {
-      const response = await fetch("http://localhost:3000/provider", {
+      const response = await fetch("http://localhost:4000/provider", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(provider),
@@ -94,7 +95,7 @@ export const atualizarFornecedor = createAsyncThunk(
   async (fornecedor: Provider) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/provider/${fornecedor.document}`,
+        `http://localhost:4000/provider/${fornecedor.document}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -109,7 +110,7 @@ export const atualizarFornecedor = createAsyncThunk(
           fornecedor: fornecedor,
         };
       } else {
-        console.log("erro")
+        console.log("erro");
         return {
           status: false,
           message:
@@ -118,7 +119,7 @@ export const atualizarFornecedor = createAsyncThunk(
         };
       }
     } catch (error: any) {
-      console.log("erro geral")
+      console.log("erro geral");
       return {
         status: false,
         message:
@@ -134,7 +135,7 @@ export const removerFornecedor = createAsyncThunk(
   async (document: string) => {
     try {
       const response = await fetch(
-        `http://localhost:3000/provider/${document}`,
+        `http://localhost:4000/provider/${document}`,
         {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
@@ -176,7 +177,7 @@ const providerSlice = createSlice({
     });
     builder.addCase(buscarProviders.fulfilled, (state, action) => {
       if (!action.payload.status) {
-        console.log("09")
+        console.log("09");
         state.status = STATE.ERRO;
         state.message = action.payload.message as string;
       } else {
@@ -221,7 +222,8 @@ const providerSlice = createSlice({
         state.status = STATE.OCIOSO;
         state.message = action.payload.message as string;
         const index = state.providerList.findIndex(
-          (fornecedor) => fornecedor.document === action.payload.fornecedor?.document
+          (fornecedor) =>
+            fornecedor.document === action.payload.fornecedor?.document
         );
         state.providerList[index] = action.payload.fornecedor as Provider;
       }

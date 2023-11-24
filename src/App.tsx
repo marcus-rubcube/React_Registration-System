@@ -27,7 +27,7 @@ function App() {
         <Routes>
           <Route
             path={translateMenu.routes.clients}
-            element={<RegisterClientScreen clients={clients} />}
+            element={<RegisterClientScreen />}
           />
           <Route
             path={translateMenu.routes.categories}
@@ -56,7 +56,7 @@ function App() {
           />
           <Route
             path="/"
-            element={<RegisterClientScreen clients={clients} />}
+            element={<RegisterClientScreen />}
           />
           <Route path="*" element={<NotFoundScreens />} />
         </Routes>

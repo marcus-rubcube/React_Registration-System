@@ -26,6 +26,7 @@ interface ProvidersProps {
   setSelectedProvider: React.Dispatch<React.SetStateAction<Provider>>;
 }
 export interface Provider {
+  id: number;
   name: string;
   phoneNumber: string;
   email: string;

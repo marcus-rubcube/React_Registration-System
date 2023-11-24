@@ -7,6 +7,7 @@ import {
   ProviderState,
   buscarProviders,
   removerFornecedor,
+  setStatusIdle,
 } from "../../../redux/providerReducer";
 import { ReduxState } from "../../../redux/types";
 import STATE from "../../../resources/state";
@@ -114,7 +115,14 @@ export const ProvidersTable = ({
 
   return (
     <Container className="mt-4">
-      <Button type="button" onClick={() => setShowForm(true)} className="mb-3">
+      <Button
+        type="button"
+        onClick={() => {
+          setShowForm(true);
+          dispatch(setStatusIdle());
+        }}
+        className="mb-3"
+      >
         {tableTranslates.providers.goBackButtonLabel}
       </Button>
       {renderContent()}
