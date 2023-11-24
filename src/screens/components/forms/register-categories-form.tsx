@@ -28,7 +28,7 @@ import { toast } from "react-toastify";
 const translate = formsTranslates.categoriesForm;
 
 export interface Category {
-  id: string;
+  id: number;
   name: string;
   description: string;
 }

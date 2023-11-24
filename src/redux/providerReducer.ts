@@ -109,6 +109,7 @@ export const atualizarFornecedor = createAsyncThunk(
           fornecedor: fornecedor,
         };
       } else {
+        console.log("erro")
         return {
           status: false,
           message:
@@ -117,6 +118,7 @@ export const atualizarFornecedor = createAsyncThunk(
         };
       }
     } catch (error: any) {
+      console.log("erro geral")
       return {
         status: false,
         message:
@@ -174,6 +176,7 @@ const providerSlice = createSlice({
     });
     builder.addCase(buscarProviders.fulfilled, (state, action) => {
       if (!action.payload.status) {
+        console.log("09")
         state.status = STATE.ERRO;
         state.message = action.payload.message as string;
       } else {
@@ -183,6 +186,7 @@ const providerSlice = createSlice({
       }
     });
     builder.addCase(buscarProviders.rejected, (state, action) => {
+      console.log(action.error);
       state.status = STATE.ERRO;
       state.providerList = [];
       state.message = action.error.message as string;
@@ -243,7 +247,6 @@ const providerSlice = createSlice({
       }
     });
     builder.addCase(removerFornecedor.rejected, (state, action) => {
-      console.log(action.error);
       state.status = STATE.ERRO;
       state.message = action.error.message as string;
     });

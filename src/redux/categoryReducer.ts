@@ -9,7 +9,7 @@ export interface CategoryState {
 }
 
 export const INITIAL_CATEGORY_STATE = {
-  id: "",
+  id: 0,
   name: "",
   description: "",
 };
@@ -137,7 +137,7 @@ export const removerCategoria = createAsyncThunk(
         return {
           status: true,
           message: "",
-          categoryID,
+          categoryID: Number(categoryID),
         };
       } else {
         return {
@@ -237,7 +237,6 @@ const categoriesSlicer = createSlice({
       }
     });
     builder.addCase(removerCategoria.rejected, (state, action) => {
-      console.log(action.error);
       state.status = STATE.ERRO;
       state.message = action.error.message as string;
     });

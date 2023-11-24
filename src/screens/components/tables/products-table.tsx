@@ -1,9 +1,16 @@
-import { Alert, Button, Container, Table } from "react-bootstrap";
+import { Alert, Button, Container, Spinner, Table } from "react-bootstrap";
 import { tableTranslates } from "./translations/ptBr";
 import { Product } from "../../register-products/register-products-screen";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
-import { removeProduct } from "../../../redux/productReducer";
-import { useDispatch } from "react-redux";
+import { buscarProducts, removerProduto } from "../../../redux/productReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { CategoryState } from "../../../redux/categoryReducer";
+import { useEffect } from "react";
+import STATE from "../../../resources/state";
+import { toast } from "react-toastify";
+import { ReduxState } from "../../../redux/types";
+import { formatarData } from "../../../utils/formatar-data";
 
 interface ProductsProps {
   setShowForm: (value: boolean) => void;
@@ -14,15 +21,24 @@ interface ProductsProps {
 
 export const ProductsTable = ({
   setShowForm,
-  products,
   setEditMode,
   setSelectedProduct,
 }: ProductsProps) => {
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch<CategoryState, any, AnyAction> = useDispatch();
+
+  const { status, productList, message } = useSelector(
+    (state: ReduxState) => state.products
+  );
+
+  useEffect(() => {
+    dispatch(buscarProducts());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const renderTableRow = (product: Product) => {
     function deleteProduct(name: string) {
       if (window.confirm(`${tableTranslates.providers.wantToDelete}`)) {
-        dispatch(removeProduct(product));
+        dispatch(removerProduto(product.id));
       }
     }
 
@@ -30,6 +46,23 @@ export const ProductsTable = ({
       setSelectedProduct(product);
       setEditMode(true);
       setShowForm(true);
+    }
+
+    if (status === STATE.ERRO) {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    } else if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
     }
 
     return (
@@ -41,9 +74,9 @@ export const ProductsTable = ({
           <td>{product.stockQuantity}</td>
           <td>{product.brand}</td>
           <td>{product.model}</td>
-          <td>{product.manufacturingDate}</td>
-          <td>{product.category}</td>
-          <td>{product.provider}</td>
+          <td>{formatarData(product.manufacturingDate)}</td>
+          <td>{product.category.name}</td>
+          <td>{product.provider.name}</td>
           <td>
             <ActionsButton
               deleteItem={() => deleteProduct(product.name)}
@@ -56,7 +89,7 @@ export const ProductsTable = ({
   };
 
   function renderContent() {
-    if (products.length === 0) {
+    if (productList.length === 0) {
       return (
         <Alert className="mt-3">{tableTranslates.products.noContent}</Alert>
       );
@@ -79,7 +112,7 @@ export const ProductsTable = ({
           </tr>
         </thead>
         <tbody>
-          {products.map((product: Product) => renderTableRow(product))}
+          {productList.map((product: Product) => renderTableRow(product))}
         </tbody>
       </Table>
     );

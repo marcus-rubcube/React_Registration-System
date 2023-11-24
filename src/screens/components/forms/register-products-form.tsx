@@ -1,30 +1,34 @@
-import { ReactElement, useState } from "react";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { ReactElement, useEffect, useState } from "react";
 import {
-  Container,
-  Form,
-  Row,
-  Col,
-  FloatingLabel,
-  FormControl,
   Button,
+  Col,
+  Container,
+  FloatingLabel,
+  Form,
+  FormControl,
+  Row,
+  Spinner,
 } from "react-bootstrap";
-import { ProductFormEnum } from "./enums/product-form";
-import { formsTranslates } from "./translations/ptBr";
-import { Provider, TIMEOUT } from "./register-provider-form";
-import { Product } from "../../register-products/register-products-screen";
-import Message from "../message/message";
-import { Category } from "./register-categories-form";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { buscarCategorias } from "../../../redux/categoryReducer";
 import {
   INITIAL_PRODUCTS_STATE,
-  addProduct,
-  removeProduct,
+  atualizarProduto,
+  cadastrarProduto,
 } from "../../../redux/productReducer";
-import { useDispatch } from "react-redux";
+import { ProviderState, buscarProviders } from "../../../redux/providerReducer";
+import { ReduxState } from "../../../redux/types";
+import STATE from "../../../resources/state";
+import { Product } from "../../register-products/register-products-screen";
+import Message from "../message/message";
+import { ProductFormEnum } from "./enums/product-form";
+import { TIMEOUT } from "./register-provider-form";
+import { formsTranslates } from "./translations/ptBr";
 
 interface ProductsProps {
   setShowForm: (value: boolean) => void;
-  providers: Provider[];
-  categories: Category[];
   selectedProduct: Product;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -39,28 +43,62 @@ const translate = formsTranslates.productsForm;
 
 export const RegisterProductForm = ({
   setShowForm,
-  providers,
   editMode,
   selectedProduct,
   setEditMode,
-  categories,
   setSelectedProduct,
 }: ProductsProps): ReactElement => {
   const [product, setProduct] = useState<Product>(selectedProduct);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
-
-  const dispatch = useDispatch();
+  const { status, message } = useSelector(
+    (state: ReduxState) => state.products
+  );
+  const categoryState = useSelector((state: ReduxState) => state.categories);
+  const providerState = useSelector((state: ReduxState) => state.providers);
+  const dispatch: ThunkDispatch<ProviderState, any, AnyAction> = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
     field: ProductFormEnum
   ) {
-    setProduct({ ...product, [field]: event.currentTarget.value });
+    if (field === ProductFormEnum.category) {
+      const category = categoryState.categoriesList.find(
+        (category) => category.name === event.currentTarget.value
+      );
+      setProduct({ ...product, category: category! });
+    } else if (field === ProductFormEnum.provider) {
+      const provider = providerState.providerList.find(
+        (provider) => provider.name === event.currentTarget.value
+      );
+      setProduct({ ...product, provider: provider! });
+    } else {
+      setProduct({ ...product, [field]: event.currentTarget.value });
+    }
   }
 
+  useEffect(() => {
+    dispatch(buscarCategorias());
+    dispatch(buscarProviders());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   function addProducts() {
-    dispatch(addProduct(product));
+    dispatch(cadastrarProduto(product));
+    if (status === STATE.PENDENTE) {
+      return <Spinner />;
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
   }
 
   function resetForm() {
@@ -68,7 +106,25 @@ export const RegisterProductForm = ({
   }
 
   function editProduct() {
-    dispatch(removeProduct(product));
+    dispatch(atualizarProduto(product));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
     setSelectedProduct(INITIAL_PRODUCTS_STATE);
   }
 
@@ -123,6 +179,17 @@ export const RegisterProductForm = ({
       );
     }
     return <></>;
+  }
+
+  if (
+    categoryState.status === STATE.PENDENTE &&
+    providerState.status === STATE.PENDENTE
+  ) {
+    return (
+      <Container>
+        <Spinner animation="border" role="status"></Spinner>
+      </Container>
+    );
   }
 
   return (
@@ -267,7 +334,7 @@ export const RegisterProductForm = ({
                 <FormControl
                   type="date"
                   placeholder={translate.placeholders.manufacturingDate}
-                  value={product.manufacturingDate}
+                  value={product.manufacturingDate.split('T')[0]}
                   onChange={(event) =>
                     onChange(event, ProductFormEnum.manufacturingDate)
                   }
@@ -289,10 +356,10 @@ export const RegisterProductForm = ({
                   onChange={(event) =>
                     onChange(event, ProductFormEnum.category)
                   }
-                  value={product.category}
+                  value={product.category.name}
                 >
                   <option value="">{translate.placeholders.category}</option>
-                  {categories.map((category, index) => (
+                  {categoryState.categoriesList.map((category, index) => (
                     <option key={index} value={category.name}>
                       {category.name}
                     </option>
@@ -314,11 +381,11 @@ export const RegisterProductForm = ({
                   onChange={(event) =>
                     onChange(event, ProductFormEnum.provider)
                   }
-                  value={product.provider}
+                  value={product.provider.name}
                 >
                   <option value="">{translate.placeholders.provider}</option>
-                  {providers.map((provider) => (
-                    <option key={provider.document} value={provider.document}>
+                  {providerState.providerList.map((provider) => (
+                    <option key={provider.name} value={provider.name}>
                       {provider.name}
                     </option>
                   ))}

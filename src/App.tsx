@@ -39,7 +39,7 @@ function App() {
           />
           <Route
             path={translateMenu.routes.products}
-            element={<RegisterProductsScreen providers={providers} />}
+            element={<RegisterProductsScreen />}
           />
           <Route
             path={translateMenu.routes.sale}

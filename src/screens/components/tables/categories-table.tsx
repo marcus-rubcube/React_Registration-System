@@ -32,7 +32,7 @@ export const CategoriesTable = (props: CategorieProps) => {
   const renderTableRow = (category: Category) => {
     function deleteCategory() {
       if (window.confirm(`${tableTranslates.categories.wantToDelete}`)) {
-        dispatch(removerCategoria(category.id));
+        dispatch(removerCategoria(category.id.toString()));
       }
     }
 
