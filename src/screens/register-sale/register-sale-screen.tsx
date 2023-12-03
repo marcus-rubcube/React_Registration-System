@@ -5,13 +5,15 @@ import { SaleTable } from "../components/tables/sale-table";
 import { Client } from "../components/forms/register-client-form";
 import { useSelector } from "react-redux";
 import { ReduxState } from "../../redux/types";
+import { INITIAL_CLIENT_STATE } from "../../redux/clientReducer";
 
 export const INITIAL_SALE_STATE: Sale = {
+  id: 0,
   paymentMethod: "",
-  client: "",
+  client: INITIAL_CLIENT_STATE,
   quantity: null,
   value: null,
-  saleCode: "",
+  code: "",
 };
 
 interface RegisterSaleProps {
@@ -30,7 +32,6 @@ export const RegisterSaleScreen = ({
       {showForm ? (
         <RegisterSaleForm
           setShowForm={setShowForm}
-          clients={clients}
           editMode={editMode}
           setSelectedSale={setSelectedSale}
           setEditMode={setEditMode}

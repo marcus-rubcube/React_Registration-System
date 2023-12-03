@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -7,6 +7,7 @@ import {
   Form,
   FormControl,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { formsTranslates } from "./translations/ptBr";
 import { SaleForm } from "./enums/sale-form";
@@ -15,14 +16,19 @@ import { INITIAL_SALE_STATE } from "../../register-sale/register-sale-screen";
 import { TIMEOUT } from "./register-provider-form";
 import Message from "../message/message";
 import { PurchaseForm } from "./enums/purchase-form";
-import { useDispatch } from "react-redux";
-import { addSales, updateSale } from "../../../redux/saleReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { SaleState, atualizarVenda, cadastrarVenda } from "../../../redux/saleReducer";
+import { ThunkDispatch } from "@reduxjs/toolkit";
+import { AnyAction } from "redux";
+import STATE from "../../../resources/state";
+import { ReduxState } from "../../../redux/types";
+import { toast } from "react-toastify";
+import { buscarClientes } from "../../../redux/clientReducer";
 
 const translate = formsTranslates.saleForm;
 
 interface props {
   setShowForm: (value: boolean) => void;
-  clients: Client[];
   selectedSale: Sale;
   editMode: boolean;
   setEditMode: React.Dispatch<React.SetStateAction<boolean>>;
@@ -34,16 +40,16 @@ interface FormControlElement {
 }
 
 export interface Sale {
-  client: string;
+  id: number;
+  client: Client;
   quantity: number | null;
   value: number | null;
   paymentMethod: string;
-  saleCode: string;
+  code: string;
 }
 
 export const RegisterSaleForm = ({
   setShowForm,
-  clients,
   setSelectedSale,
   setEditMode,
   selectedSale,
@@ -52,18 +58,48 @@ export const RegisterSaleForm = ({
   const [formSale, setFormSale] = useState<Sale>(selectedSale);
   const [showSuccesRegister, setShowSuccessRegister] = useState(false);
   const [validated, setValidated] = useState(false);
-
-  const dispatch = useDispatch();
+  const { status, message } = useSelector((state: ReduxState) => state.sales);
+  const dispatch: ThunkDispatch<SaleState, any, AnyAction> = useDispatch();
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
     field: SaleForm
   ) {
+    if (field === SaleForm.client) {
+
+      const client = clients.find(
+        (client) => client.name === event.currentTarget.value
+      );
+      setFormSale({ ...formSale, client: client! });
+      return
+    }
     setFormSale({ ...formSale, [field]: event.currentTarget.value });
   }
 
+  const clients = useSelector((state: ReduxState) => state.clients.clientsList);
+
+  useEffect(() => {
+    dispatch(buscarClientes());
+  }, [dispatch]);
+
   function addSale() {
-    dispatch(addSales(formSale));
+    dispatch(cadastrarVenda(formSale));
+    if (status === STATE.PENDENTE) {
+      return <Spinner />
+    }
+    else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    }
+    else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      )
+    }
   }
 
   function resetForm() {
@@ -71,8 +107,26 @@ export const RegisterSaleForm = ({
   }
 
   function editSale() {
-    dispatch(updateSale(formSale));
-    setSelectedSale(INITIAL_SALE_STATE);
+    dispatch(atualizarVenda(formSale));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
+    resetForm();
   }
 
   function onSuccessAction() {
@@ -150,7 +204,7 @@ export const RegisterSaleForm = ({
                   onChange={(event) =>
                     onChange(event, SaleForm.saleCode)
                   }
-                  value={formSale.saleCode}
+                  value={formSale.code}
                   required
                 />
               </FloatingLabel>
@@ -171,11 +225,11 @@ export const RegisterSaleForm = ({
                 <Form.Select
                   required
                   onChange={(event) => onChange(event, SaleForm.client)}
-                  value={formSale.client}
+                  value={formSale.client.name}
                 >
                   <option value="">{translate.placeholders.client}</option>
                   {clients.map((client) => (
-                    <option key={client.document} value={client.document}>
+                    <option key={client.id} value={client.name}>
                       {client.name}
                     </option>
                   ))}

@@ -3,5 +3,5 @@ export enum SaleForm {
     quantity = "quantity",
     value = "value",
     paymentMethod = "paymentMethod",
-    saleCode = "saleCode"
+    saleCode = "code"
 }
