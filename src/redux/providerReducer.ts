@@ -165,7 +165,7 @@ export const removerFornecedor = createAsyncThunk(
   }
 );
 
-export const setStatusIdle = createAction("category/setStatusIdle");
+export const setStatusIdle = createAction("provider/setStatusIdle");
 
 const providerSlice = createSlice({
   name: "provider",

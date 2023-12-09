@@ -182,7 +182,7 @@ export const removerProduto = createAsyncThunk(
   }
 );
 
-export const setStatusIdle = createAction("category/setStatusIdle");
+export const setStatusIdle = createAction("product/setStatusIdle");
 
 const productSlicer = createSlice({
   name: "product",
