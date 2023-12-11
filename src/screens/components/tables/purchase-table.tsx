@@ -3,7 +3,9 @@ import { tableTranslates } from "./translations/ptBr";
 import { Purchase } from "../forms/register-purchase-form";
 import { ActionsButton } from "./components/actions-buttons/actions-button";
 import { useDispatch } from "react-redux";
-import { removePurchase } from "../../../redux/purchaseReducer";
+import { PurchaseState, buscarCompras, removerCompra } from "../../../redux/purchaseReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import { useEffect } from "react";
 
 interface PurchaseProps {
   setShowForm: (value: boolean) => void;
@@ -18,12 +20,16 @@ export const PurchaseTable = ({
   setEditMode,
   setSelectedPurchase,
 }: PurchaseProps) => {
-  const dispatch = useDispatch();
+  const dispatch: ThunkDispatch<PurchaseState, any, AnyAction> = useDispatch();
+
+  useEffect(() => {
+    dispatch(buscarCompras());
+  },[dispatch])
 
   const renderTableRow = (purchase: Purchase) => {
     function deletePurchase() {
       if (window.confirm(`${tableTranslates.purchase.wantToDelete}`)) {
-        dispatch(removePurchase(purchase));
+        dispatch(removerCompra(purchase.id));
       }
     }
 
@@ -38,7 +44,7 @@ export const PurchaseTable = ({
         <tr>
           <td>{purchase.purchaseCode}</td>
           <td>{purchase.paymentMethod}</td>
-          <td>{purchase.provider}</td>
+          <td>{purchase.provider.name}</td>
           <td>{purchase.quantity}</td>
           <td>{`R$ ${purchase.value}`}</td>
           <td>
@@ -53,7 +59,7 @@ export const PurchaseTable = ({
   };
 
   function renderContent() {
-    if (purchases.length === 0) {
+    if (purchases && purchases.length === 0) {
       return (
         <Alert className="mt-3">{tableTranslates.purchase.noContent}</Alert>
       );

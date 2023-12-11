@@ -8,25 +8,6 @@ export interface SaleState {
   salesList: Sale[];
 }
 
-export const INITIAL_SALE_STATE: Sale = {
-  id: 0,
-  paymentMethod: "",
-  client: {
-    id: 0,
-    name: "",
-    document: "",
-    address: "",
-    neighborhood: "",
-    city: "",
-    zipCode: "",
-    number: "",
-    uf: "",
-  },
-  quantity: null,
-  value: null,
-  code: "",
-};
-
 const initialState: SaleState = {
   status: STATE.OCIOSO,
   message: "",
@@ -48,7 +29,6 @@ export const buscarVendas = createAsyncThunk("sale/get", async () => {
     } else {
       return {
         status: false,
-        
         message:
           "Ocorreu um erro ao recuperar os vendaes da base de dados.",
       };

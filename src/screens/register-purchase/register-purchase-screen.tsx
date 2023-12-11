@@ -8,8 +8,17 @@ import {
 import { Provider } from "../components/forms/register-provider-form";
 
 export const INITIAL_PURCHASE_STATE: Purchase = {
+  id: 0,
   paymentMethod: "",
-  provider: "",
+  provider: {
+    id: 0,
+    name: "",
+    phoneNumber: "",
+    email: "",
+    website: "",
+    description: "",
+    document: "",
+  },
   quantity: null,
   value: null,
   purchaseCode: "",

@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   Button,
   Col,
@@ -7,15 +7,20 @@ import {
   Form,
   FormControl,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { formsTranslates } from "./translations/ptBr";
 import { PurchaseForm } from "./enums/purchase-form";
 import { Provider, TIMEOUT } from "./register-provider-form";
 import Message from "../message/message";
 import { INITIAL_PURCHASE_STATE } from "../../register-purchase/register-purchase-screen";
-import { useDispatch } from "react-redux";
-import { addPurchases, updatePurchase } from "../../../redux/purchaseReducer";
-
+import { useDispatch, useSelector } from "react-redux";
+import { PurchaseState, atualizarCompra, buscarCompras, cadastrarCompra } from "../../../redux/purchaseReducer";
+import { AnyAction, ThunkDispatch } from "@reduxjs/toolkit";
+import STATE from "../../../resources/state";
+import { ReduxState } from "../../../redux/types";
+import { toast } from "react-toastify";
+import { buscarProviders } from "../../../redux/providerReducer";
 const translate = formsTranslates.purchaseForm;
 
 interface props {
@@ -29,8 +34,9 @@ interface props {
 }
 
 export interface Purchase {
+  id: number;
   purchaseCode: string;
-  provider: string;
+  provider: Provider;
   quantity: number | null;
   value: number | null;
   paymentMethod: string;
@@ -44,7 +50,6 @@ export const RegisterPurchaseForm = ({
   setShowForm,
   providers,
   editMode,
-  purchases,
   selectedPurchase,
   setEditMode,
   setSelectedPurchase,
@@ -52,18 +57,46 @@ export const RegisterPurchaseForm = ({
   const [purchase, setPurchase] = useState<Purchase>(selectedPurchase);
   const [validated, setValidated] = useState(false);
   const [showSuccessRegister, setShowSuccessRegister] = useState(false);
+  const { status, message } = useSelector((state: ReduxState) => state.purchases);
+  const dispatch: ThunkDispatch<PurchaseState, any, AnyAction> = useDispatch();
 
-  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(buscarCompras());
+    dispatch(buscarProviders());
+  }, [dispatch]);
 
   function onChange(
     event: React.ChangeEvent<FormControlElement>,
     field: PurchaseForm
   ) {
+    if (field === PurchaseForm.provider) {
+      const provider = providers.find(
+        (provider) => provider.name === event.currentTarget.value
+      );
+      setPurchase({ ...purchase, provider: provider! });
+      return;
+    }
     setPurchase({ ...purchase, [field]: event.currentTarget.value });
   }
 
   function addPurchase() {
-    dispatch(addPurchases(purchase));
+    dispatch(cadastrarCompra(purchase));
+    if(status === STATE.PENDENTE) {
+      return <Spinner />
+      }
+      else if (status === STATE.OCIOSO) {
+        onSuccessAction();
+      }
+      else {
+        toast.error(
+          () => (
+            <div>
+              <p>{message}</p>
+            </div>
+          ),
+          {toastId: status}
+        )
+      }
   }
 
   function resetForm() {
@@ -71,8 +104,26 @@ export const RegisterPurchaseForm = ({
   }
 
   function editPurchase() {
-    dispatch(updatePurchase(purchase));
-    setSelectedPurchase(INITIAL_PURCHASE_STATE);
+    dispatch(atualizarCompra(purchase));
+    if (status === STATE.PENDENTE) {
+      return (
+        <Container className="mt-4">
+          <Spinner animation="border" role="status"></Spinner>
+        </Container>
+      );
+    } else if (status === STATE.OCIOSO) {
+      onSuccessAction();
+    } else {
+      toast.error(
+        () => (
+          <div>
+            <p>{message}</p>
+          </div>
+        ),
+        { toastId: status }
+      );
+    }
+    resetForm();
   }
 
   function onSuccessAction() {
@@ -172,11 +223,11 @@ export const RegisterPurchaseForm = ({
                 <Form.Select
                   required
                   onChange={(event) => onChange(event, PurchaseForm.provider)}
-                  value={purchase.provider}
+                  value={purchase.provider.name}
                 >
                   <option value="">{translate.placeholders.provider}</option>
                   {providers.map((provider) => (
-                    <option key={provider.document} value={provider.document}>
+                    <option key={provider.document} value={provider.name}>
                       {provider.name}
                     </option>
                   ))}
