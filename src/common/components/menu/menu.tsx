@@ -25,12 +25,12 @@ export const Menu = (): ReactElement => {
                 {translateMenu.provider}
               </NavDropdown.Item>
               <NavDropdown.Divider />
-              <NavDropdown.Item as={Link} to={translateMenu.routes.products}>
-                {translateMenu.products}
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
               <NavDropdown.Item as={Link} to={translateMenu.routes.categories}>
                 {translateMenu.categories}
+              </NavDropdown.Item>
+              <NavDropdown.Divider />
+              <NavDropdown.Item as={Link} to={translateMenu.routes.products}>
+                {translateMenu.products}
               </NavDropdown.Item>
             </NavDropdown>
             <NavDropdown
